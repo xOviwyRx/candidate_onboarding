@@ -1,4 +1,6 @@
 class CandidateProfile < ApplicationRecord
+  belongs_to :user
+
   PHONE_NUMBER_FORMAT = /\A\+?[0-9\s\-()]{6,20}\z/
 
   JOB_FUNCTIONS = %w[

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_20_122258) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_20_204213) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -43,8 +43,20 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_20_122258) do
     t.datetime "consent_given_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["email"], name: "index_candidate_profiles_on_email", unique: true
     t.index ["job_function"], name: "index_candidate_profiles_on_job_function"
     t.index ["search_status"], name: "index_candidate_profiles_on_search_status"
+    t.index ["user_id"], name: "index_candidate_profiles_on_user_id", unique: true
   end
+
+  create_table "users", force: :cascade do |t|
+    t.string "email", null: false
+    t.string "password_digest", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+  end
+
+  add_foreign_key "candidate_profiles", "users"
 end
