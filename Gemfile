@@ -55,6 +55,9 @@ group :development, :test do
 
   # Fixtures replacement [https://github.com/thoughtbot/factory_bot_rails]
   gem "factory_bot_rails"
+
+  # Loads environment variables from .env [https://github.com/bkeepers/dotenv]
+  gem "dotenv-rails"
 end
 
 group :development do
