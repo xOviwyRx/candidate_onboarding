@@ -53,12 +53,12 @@ class CandidateProfile < ApplicationRecord
   private
 
   def available_working_days_valid
-    invalid = available_working_days - WORKING_DAYS
+    invalid = available_working_days.to_a - WORKING_DAYS
     errors.add(:available_working_days, "contains invalid values: #{invalid.join(', ')}") if invalid.any?
   end
 
   def transport_types_valid
-    invalid = transport_types - TRANSPORT_TYPES
+    invalid = transport_types.to_a - TRANSPORT_TYPES
     errors.add(:transport_types, "contains invalid values: #{invalid.join(', ')}") if invalid.any?
   end
 end
