@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_21_144228) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_21_151641) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -115,10 +115,24 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_21_144228) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  create_table "work_experiences", force: :cascade do |t|
+    t.bigint "candidate_profile_id", null: false
+    t.string "job_title", null: false
+    t.string "company_name", null: false
+    t.text "responsibilities"
+    t.date "start_date"
+    t.date "end_date"
+    t.boolean "current_job", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["candidate_profile_id"], name: "index_work_experiences_on_candidate_profile_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "candidate_documents", "candidate_profiles"
   add_foreign_key "candidate_documents", "users"
   add_foreign_key "candidate_profiles", "users"
   add_foreign_key "educations", "candidate_profiles"
+  add_foreign_key "work_experiences", "candidate_profiles"
 end

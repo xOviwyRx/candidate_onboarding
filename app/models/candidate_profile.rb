@@ -2,6 +2,7 @@ class CandidateProfile < ApplicationRecord
   belongs_to :user
 
   has_many :educations, dependent: :destroy
+  has_many :work_experiences, dependent: :destroy
 
   PHONE_NUMBER_FORMAT = /\A\+?[0-9\s\-()]{6,20}\z/
 
