@@ -1,0 +1,16 @@
+<% content_for :title, "Your CV" %>
+
+<h1>Your CV</h1>
+
+<dl>
+  <dt>File</dt>
+  <dd><%= @candidate_document.original_filename %></dd>
+
+  <dt>Size</dt>
+  <dd><%= number_to_human_size(@candidate_document.file_size) %></dd>
+
+  <dt>Status</dt>
+  <dd><%= @candidate_document.parsing_status.humanize %></dd>
+</dl>
+
+<%= link_to "Upload a different CV", new_candidate_document_path %>

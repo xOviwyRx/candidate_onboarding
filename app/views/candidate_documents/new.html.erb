@@ -1,0 +1,28 @@
+<% content_for :title, "Upload your CV" %>
+
+<h1>Upload your CV</h1>
+
+<p>
+  We will automatically fill in as much of your candidate profile as possible.
+  You can review and edit everything before saving.
+</p>
+
+<%= form_with model: @candidate_document, url: candidate_documents_path do |form| %>
+  <% if @candidate_document.errors.any? %>
+    <ul class="errors">
+      <% @candidate_document.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <div>
+    <%= form.label :file, "Choose your CV" %>
+    <%= form.file_field :file, accept: CandidateDocument::CONTENT_TYPES.join(",") %>
+    <p>PDF, DOC or DOCX, up to <%= number_to_human_size(CandidateDocument.max_file_size) %>.</p>
+  </div>
+
+  <%= form.submit "Upload CV" %>
+<% end %>
+
+<%= button_to "Sign out", session_path, method: :delete %>
