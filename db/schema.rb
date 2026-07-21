@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_21_125715) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_21_144228) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -84,7 +84,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_21_125715) do
     t.text "motivation_for_employer"
     t.text "internal_notes"
     t.text "professional_summary"
-    t.datetime "consent_given_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
@@ -112,6 +111,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_21_125715) do
     t.string "password_digest", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "consent_given_at"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
