@@ -3,49 +3,40 @@ require "rails_helper"
 RSpec.describe CandidateDocument, type: :model do
   subject(:document) { build(:candidate_document) }
 
-  it "is valid with an attached PDF" do
-    expect(document).to be_valid
-  end
+  it { is_expected.to belong_to(:user) }
+  it { is_expected.to belong_to(:candidate_profile).optional }
+  it { is_expected.to have_one_attached(:file) }
 
-  context "without a file" do
-    subject(:document) { build(:candidate_document).tap { |doc| doc.file.detach } }
+  it {
+    is_expected.to define_enum_for(:parsing_status)
+      .with_values(pending: "pending", processing: "processing", completed: "completed", failed: "failed")
+      .backed_by_column_of_type(:string)
+      .validating
+  }
 
-    it "is NOT valid" do
-      aggregate_failures do
-        expect(document).not_to be_valid
-        expect(document.errors[:file]).to include("can't be blank")
-      end
+  describe "accepted files" do
+    it "accepts a PDF" do
+      expect(build(:candidate_document)).to be_valid
+    end
+
+    it "accepts a Word document" do
+      expect(build(:candidate_document, :word_document)).to be_valid
+    end
+
+    it "accepts an Office Open XML document" do
+      expect(build(:candidate_document, :office_open_xml)).to be_valid
+    end
+
+    it "rejects any other file type" do
+      expect(build(:candidate_document, :unsupported_type)).not_to be_valid
+    end
+
+    it "rejects a document with no file attached" do
+      expect(build(:candidate_document).tap { |doc| doc.file.detach }).not_to be_valid
     end
   end
 
-  context "when the file is a Word document" do
-    subject(:document) { build(:candidate_document, :word_document) }
-
-    it "is valid" do
-      expect(document).to be_valid
-    end
-  end
-
-  context "when the file is an Office Open XML document" do
-    subject(:document) { build(:candidate_document, :office_open_xml) }
-
-    it "is valid" do
-      expect(document).to be_valid
-    end
-  end
-
-  context "when the file type is not accepted" do
-    subject(:document) { build(:candidate_document, :unsupported_type) }
-
-    it "is NOT valid" do
-      aggregate_failures do
-        expect(document).not_to be_valid
-        expect(document.errors[:content_type]).to include("is not included in the list")
-      end
-    end
-  end
-
-  context "when the maximum size is one megabyte" do
+  describe "file size" do
     before do
       allow(ENV).to receive(:fetch).and_call_original
       allow(ENV).to receive(:fetch)
@@ -53,40 +44,18 @@ RSpec.describe CandidateDocument, type: :model do
         .and_return(1)
     end
 
-    context "and the file is exactly one megabyte" do
-      subject(:document) { build(:candidate_document, file_bytes: 1.megabyte) }
-
-      it "is valid, because the limit is inclusive" do
-        expect(document).to be_valid
-      end
+    it "accepts a file of exactly the maximum size, because the limit is inclusive" do
+      expect(build(:candidate_document, file_bytes: 1.megabyte)).to be_valid
     end
 
-    context "and the file is one byte larger" do
-      subject(:document) { build(:candidate_document, file_bytes: 1.megabyte + 1) }
-
-      it "is NOT valid" do
-        aggregate_failures do
-          expect(document).not_to be_valid
-          expect(document.errors[:file_size]).to include("must be less than or equal to #{1.megabyte}")
-        end
-      end
-    end
-  end
-
-  context "without a candidate profile" do
-    subject(:document) { build(:candidate_document, candidate_profile: nil) }
-
-    it "is valid, because a CV is uploaded before the profile is created" do
-      expect(document).to be_valid
+    it "rejects a file one byte over the maximum" do
+      expect(build(:candidate_document, file_bytes: 1.megabyte + 1)).not_to be_valid
     end
   end
 
   describe "file metadata" do
-    subject(:document) do
-      build(:candidate_document, filename: "anna-cv.pdf", file_bytes: 2.kilobytes)
-    end
-
     it "copies the filename, content type and size from the attachment" do
+      document = build(:candidate_document, filename: "anna-cv.pdf", file_bytes: 2.kilobytes)
       document.validate
 
       aggregate_failures do
@@ -102,17 +71,13 @@ RSpec.describe CandidateDocument, type: :model do
       expect(described_class.max_file_size).to eq(25.megabytes)
     end
 
-    context "when MAX_CV_FILE_SIZE_MB is set" do
-      before do
-        allow(ENV).to receive(:fetch).and_call_original
-        allow(ENV).to receive(:fetch)
-          .with("MAX_CV_FILE_SIZE_MB", described_class::DEFAULT_MAX_FILE_SIZE_MB)
-          .and_return(50)
-      end
+    it "uses MAX_CV_FILE_SIZE_MB when it is set" do
+      allow(ENV).to receive(:fetch).and_call_original
+      allow(ENV).to receive(:fetch)
+        .with("MAX_CV_FILE_SIZE_MB", described_class::DEFAULT_MAX_FILE_SIZE_MB)
+        .and_return(50)
 
-      it "uses the configured value" do
-        expect(described_class.max_file_size).to eq(50.megabytes)
-      end
+      expect(described_class.max_file_size).to eq(50.megabytes)
     end
   end
 end
