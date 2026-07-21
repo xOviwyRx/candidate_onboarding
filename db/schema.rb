@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_21_124241) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_21_125715) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -94,6 +94,19 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_21_124241) do
     t.index ["user_id"], name: "index_candidate_profiles_on_user_id", unique: true
   end
 
+  create_table "educations", force: :cascade do |t|
+    t.bigint "candidate_profile_id", null: false
+    t.string "institution"
+    t.string "study", null: false
+    t.string "location"
+    t.string "level"
+    t.date "start_date"
+    t.date "end_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["candidate_profile_id"], name: "index_educations_on_candidate_profile_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
     t.string "password_digest", null: false
@@ -107,4 +120,5 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_21_124241) do
   add_foreign_key "candidate_documents", "candidate_profiles"
   add_foreign_key "candidate_documents", "users"
   add_foreign_key "candidate_profiles", "users"
+  add_foreign_key "educations", "candidate_profiles"
 end
