@@ -1,5 +1,11 @@
 <% content_for :title, "Your CV" %>
 
+<% if @candidate_document.pending? || @candidate_document.processing? %>
+  <% content_for :head do %>
+    <meta http-equiv="refresh" content="2">
+  <% end %>
+<% end %>
+
 <h1>Your CV</h1>
 
 <dl>
@@ -8,9 +14,16 @@
 
   <dt>Size</dt>
   <dd><%= number_to_human_size(@candidate_document.file_size) %></dd>
-
-  <dt>Status</dt>
-  <dd><%= @candidate_document.parsing_status.humanize %></dd>
 </dl>
+
+<% if @candidate_document.completed? %>
+  <p>We read your CV. Please review the details we found before saving your profile.</p>
+  <%# The review form arrives with the next phase; parsed data is shown meanwhile. %>
+  <pre><%= JSON.pretty_generate(@candidate_document.parsed_data) %></pre>
+<% elsif @candidate_document.failed? %>
+  <p>We could not read this CV. You can fill in your profile yourself instead.</p>
+<% else %>
+  <p>Analyzing your CV…</p>
+<% end %>
 
 <%= link_to "Upload a different CV", new_candidate_document_path %>

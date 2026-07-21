@@ -48,6 +48,19 @@ RSpec.describe "CandidateDocuments", type: :request do
       expect(CandidateDocument.last).to be_pending
     end
 
+    it "queues the CV for parsing, so the upload request does not wait for it" do
+      expect {
+        post candidate_documents_path, params: { candidate_document: { file: cv_upload } }
+      }.to have_enqueued_job(ParseCandidateCvJob)
+    end
+
+    it "does NOT queue parsing when the upload was rejected" do
+      expect {
+        post candidate_documents_path,
+             params: { candidate_document: { file: cv_upload(filename: "cv.txt", content_type: "text/plain") } }
+      }.not_to have_enqueued_job(ParseCandidateCvJob)
+    end
+
     it "rejects a file type the platform does not accept" do
       expect {
         post candidate_documents_path,

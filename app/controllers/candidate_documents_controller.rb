@@ -10,6 +10,7 @@ class CandidateDocumentsController < ApplicationController
     @candidate_document.file.attach(params.dig(:candidate_document, :file))
 
     if @candidate_document.save
+      ParseCandidateCvJob.perform_later(@candidate_document)
       redirect_to @candidate_document
     else
       render :new, status: :unprocessable_content
