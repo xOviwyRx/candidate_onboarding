@@ -56,6 +56,9 @@ group :development, :test do
   # Fixtures replacement [https://github.com/thoughtbot/factory_bot_rails]
   gem "factory_bot_rails"
 
+  # One-liner matchers for Rails validations and associations [https://github.com/thoughtbot/shoulda-matchers]
+  gem "shoulda-matchers"
+
   # Loads environment variables from .env [https://github.com/bkeepers/dotenv]
   gem "dotenv-rails"
 end
