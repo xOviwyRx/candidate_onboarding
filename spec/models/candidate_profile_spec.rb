@@ -22,7 +22,6 @@ RSpec.describe CandidateProfile, type: :model do
 
   it { is_expected.to validate_numericality_of(:max_travel_time).only_integer.is_greater_than_or_equal_to(0) }
   it { is_expected.to validate_numericality_of(:years_of_experience).is_greater_than_or_equal_to(0) }
-  it { is_expected.to validate_numericality_of(:desired_percentage).is_in(0..100).allow_nil }
 
   it { is_expected.to allow_value("+31 6 12345678").for(:phone_number) }
   it { is_expected.not_to allow_value("call me maybe").for(:phone_number) }
@@ -76,15 +75,55 @@ RSpec.describe CandidateProfile, type: :model do
     end
   end
 
+  describe "desired percentage" do
+    subject(:profile) { build(:candidate_profile, :self_employed) }
+
+    it { is_expected.to validate_numericality_of(:desired_percentage).is_in(0..100) }
+  end
+
+  describe "conditional compensation fields" do
+    it "requires a gross salary from an employed candidate" do
+      profile = build(:candidate_profile, employment_types: %w[employed], desired_gross_salary: nil)
+
+      expect(profile).not_to be_valid
+    end
+
+    it "requires a percentage from a self-employed candidate" do
+      profile = build(:candidate_profile, :self_employed, desired_percentage: nil)
+
+      expect(profile).not_to be_valid
+    end
+
+    it "requires a BIG registration status from a dentist" do
+      profile = build(:candidate_profile, job_function: "general_dentist")
+
+      expect(profile).not_to be_valid
+    end
+
+    it "clears compensation fields that do not apply to the candidate" do
+      profile = build(:candidate_profile, job_function: "front_office",
+                                          big_number: "12345678",
+                                          average_daily_revenue: 900,
+                                          desired_percentage: 40)
+      profile.validate
+
+      aggregate_failures do
+        expect(profile.big_number).to be_nil
+        expect(profile.average_daily_revenue).to be_nil
+        expect(profile.desired_percentage).to be_nil
+      end
+    end
+  end
+
   describe "BIG registration" do
     it "requires a BIG number from a registered candidate" do
-      profile = build(:candidate_profile, big_registration_status: "registered", big_number: nil)
+      profile = build(:candidate_profile, :big_registered, big_number: nil)
 
       expect(profile).not_to be_valid
     end
 
     it "does NOT require a BIG number from a candidate whose registration is in progress" do
-      profile = build(:candidate_profile, big_registration_status: "in_progress", big_number: nil)
+      profile = build(:candidate_profile, :big_registered, big_registration_status: "in_progress", big_number: nil)
 
       expect(profile).to be_valid
     end

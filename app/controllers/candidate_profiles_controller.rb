@@ -72,6 +72,8 @@ class CandidateProfilesController < ApplicationController
       :first_name, :last_name, :email, :phone_number, :city, :country,
       :job_function, :search_status, :max_travel_time, :years_of_experience,
       :available_from, :professional_summary,
+      :desired_gross_salary, :desired_percentage, :average_daily_revenue,
+      :big_registration_status, :big_number,
       preferred_regions: [], employment_types: [], available_working_days: [],
       educations_attributes: EDUCATION_FIELDS,
       work_experiences_attributes: WORK_EXPERIENCE_FIELDS

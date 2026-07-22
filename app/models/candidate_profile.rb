@@ -28,6 +28,10 @@ class CandidateProfile < ApplicationRecord
 
   EMPLOYMENT_TYPES = %w[employed self_employed percentage_based].freeze
 
+  PERCENTAGE_EMPLOYMENT_TYPES = %w[self_employed percentage_based].freeze
+
+  BIG_JOB_FUNCTIONS = %w[general_dentist dental_hygienist specialist].freeze
+
   enum :big_registration_status, {
     registered: "registered",
     in_progress: "in_progress",
@@ -60,10 +64,40 @@ class CandidateProfile < ApplicationRecord
   validate { validate_allowed_values(:transport_types, TRANSPORT_TYPES) }
 
   validates :desired_percentage, numericality: { in: 0..100 }, allow_nil: true
+  validates :desired_gross_salary, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :average_daily_revenue, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 
+  validates :desired_gross_salary, presence: true, if: :salary_relevant?
+  validates :desired_percentage, presence: true, if: :percentage_relevant?
+  validates :big_registration_status, presence: true, if: :big_relevant?
   validates :big_number, presence: true, if: :registered?
 
+  before_validation :clear_irrelevant_compensation
+
+  def salary_relevant?
+    employment_types.to_a.include?("employed")
+  end
+
+  def percentage_relevant?
+    employment_types.to_a.intersect?(PERCENTAGE_EMPLOYMENT_TYPES)
+  end
+
+  def big_relevant?
+    BIG_JOB_FUNCTIONS.include?(job_function)
+  end
+
   private
+
+  def clear_irrelevant_compensation
+    self.desired_gross_salary = nil unless salary_relevant?
+    self.desired_percentage = nil unless percentage_relevant?
+
+    return if big_relevant?
+
+    self.average_daily_revenue = nil
+    self.big_registration_status = nil
+    self.big_number = nil
+  end
 
   def validate_allowed_values(attribute, allowed)
     invalid = public_send(attribute).to_a - allowed
