@@ -41,6 +41,53 @@
     <dd class="col-span-2"><%= l @candidate_profile.available_from, format: :long %></dd>
   </dl>
 
+  <% if @candidate_profile.educations.any? %>
+    <div class="mt-6 border-t border-gray-200 pt-6">
+      <h2 class="mb-3 text-sm font-medium text-gray-500">Education</h2>
+
+      <ul class="space-y-3 text-sm">
+        <% @candidate_profile.educations.each do |education| %>
+          <li>
+            <p class="font-medium"><%= education.study %></p>
+            <p class="text-gray-600">
+              <%= [ education.institution, education.location,
+                    Education::LEVEL_LABELS[education.level] ].compact_blank.join(" · ") %>
+            </p>
+            <% if education.start_date || education.end_date %>
+              <p class="text-gray-500">
+                <%= [ education.start_date&.year, education.end_date&.year ].compact.join(" – ") %>
+              </p>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <% if @candidate_profile.work_experiences.any? %>
+    <div class="mt-6 border-t border-gray-200 pt-6">
+      <h2 class="mb-3 text-sm font-medium text-gray-500">Work experience</h2>
+
+      <ul class="space-y-3 text-sm">
+        <% @candidate_profile.work_experiences.each do |work_experience| %>
+          <li>
+            <p class="font-medium"><%= work_experience.job_title %></p>
+            <p class="text-gray-600"><%= work_experience.company_name %></p>
+            <% if work_experience.start_date || work_experience.end_date || work_experience.current_job? %>
+              <p class="text-gray-500">
+                <%= [ work_experience.start_date&.year,
+                      work_experience.current_job? ? "Present" : work_experience.end_date&.year ].compact.join(" – ") %>
+              </p>
+            <% end %>
+            <% if work_experience.responsibilities.present? %>
+              <p class="mt-1 text-gray-700"><%= work_experience.responsibilities %></p>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
   <% if @candidate_profile.professional_summary.present? %>
     <div class="mt-6 border-t border-gray-200 pt-6">
       <h2 class="mb-2 text-sm font-medium text-gray-500">Professional summary</h2>

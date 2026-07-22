@@ -164,6 +164,20 @@ RSpec.describe "CandidateProfiles", type: :request do
       expect(response).to have_http_status(:ok)
     end
 
+    it "shows the candidate's education and work experience" do
+      sign_in(user)
+      profile = create(:candidate_profile, user: user)
+      create(:education, candidate_profile: profile, study: "Mondzorgkunde")
+      create(:work_experience, candidate_profile: profile, job_title: "Dental Hygienist")
+
+      get candidate_profile_path
+
+      aggregate_failures do
+        expect(response.body).to include("Mondzorgkunde")
+        expect(response.body).to include("Dental Hygienist")
+      end
+    end
+
     it "redirects to the form when the candidate has no profile yet" do
       sign_in(user)
 

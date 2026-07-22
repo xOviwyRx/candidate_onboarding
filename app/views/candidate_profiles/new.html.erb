@@ -87,20 +87,40 @@
     </div>
   </fieldset>
 
-  <fieldset class="card space-y-4">
+  <fieldset class="card space-y-4" data-controller="nested-form">
     <legend class="legend">Education</legend>
 
-    <%= form.fields_for :educations do |education_form| %>
-      <%= render "education_fields", form: education_form %>
-    <% end %>
+    <div class="space-y-4" data-nested-form-target="rows">
+      <%= form.fields_for :educations do |education_form| %>
+        <%= render "education_fields", form: education_form %>
+      <% end %>
+    </div>
+
+    <template data-nested-form-target="template">
+      <%= form.fields_for :educations, Education.new, child_index: "NEW_RECORD" do |education_form| %>
+        <%= render "education_fields", form: education_form %>
+      <% end %>
+    </template>
+
+    <button type="button" class="btn-secondary" data-action="nested-form#add">Add education</button>
   </fieldset>
 
-  <fieldset class="card space-y-4">
+  <fieldset class="card space-y-4" data-controller="nested-form">
     <legend class="legend">Work experience</legend>
 
-    <%= form.fields_for :work_experiences do |work_experience_form| %>
-      <%= render "work_experience_fields", form: work_experience_form %>
-    <% end %>
+    <div class="space-y-4" data-nested-form-target="rows">
+      <%= form.fields_for :work_experiences do |work_experience_form| %>
+        <%= render "work_experience_fields", form: work_experience_form %>
+      <% end %>
+    </div>
+
+    <template data-nested-form-target="template">
+      <%= form.fields_for :work_experiences, WorkExperience.new, child_index: "NEW_RECORD" do |work_experience_form| %>
+        <%= render "work_experience_fields", form: work_experience_form %>
+      <% end %>
+    </template>
+
+    <button type="button" class="btn-secondary" data-action="nested-form#add">Add job</button>
   </fieldset>
 
   <fieldset class="card space-y-4">

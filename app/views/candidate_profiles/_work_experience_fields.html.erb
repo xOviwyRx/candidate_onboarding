@@ -1,4 +1,4 @@
-<div class="rounded-md border border-gray-200 p-4 space-y-4">
+<div class="rounded-md border border-gray-200 p-4 space-y-4" data-nested-form-row>
   <div class="grid gap-4 sm:grid-cols-2">
     <div>
       <%= form.label :job_title, class: "field-label" %>
@@ -33,4 +33,9 @@
     <%= form.check_box :current_job, class: "checkbox", include_hidden: false %>
     This is my current job
   </label>
+
+  <div class="flex justify-end">
+    <button type="button" class="text-sm text-red-600 hover:underline"
+            data-action="nested-form#remove">Remove</button>
+  </div>
 </div>
