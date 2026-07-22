@@ -6,24 +6,30 @@
   <% end %>
 <% end %>
 
-<h1>Your CV</h1>
+<h1 class="mb-6 text-2xl font-semibold">Your CV</h1>
 
-<dl>
-  <dt>File</dt>
-  <dd><%= @candidate_document.original_filename %></dd>
+<div class="card">
+  <dl class="grid grid-cols-3 gap-y-2 text-sm">
+    <dt class="font-medium text-gray-500">File</dt>
+    <dd class="col-span-2"><%= @candidate_document.original_filename %></dd>
 
-  <dt>Size</dt>
-  <dd><%= number_to_human_size(@candidate_document.file_size) %></dd>
-</dl>
+    <dt class="font-medium text-gray-500">Size</dt>
+    <dd class="col-span-2"><%= number_to_human_size(@candidate_document.file_size) %></dd>
+  </dl>
 
-<% if @candidate_document.completed? %>
-  <p>We read your CV. Please check the details we found and complete the rest.</p>
-  <%= link_to "Review my profile", new_candidate_profile_path %>
-<% elsif @candidate_document.failed? %>
-  <p>We could not read this CV. You can fill in your profile yourself instead.</p>
-  <%= link_to "Continue manually", new_candidate_profile_path %>
-<% else %>
-  <p>Analyzing your CV…</p>
-<% end %>
+  <div class="mt-6 border-t border-gray-200 pt-6">
+    <% if @candidate_document.completed? %>
+      <p class="mb-4 text-sm text-gray-600">We read your CV. Please check the details we found and complete the rest.</p>
+      <%= link_to "Review my profile", new_candidate_profile_path, class: "btn" %>
+    <% elsif @candidate_document.failed? %>
+      <p class="mb-4 text-sm text-gray-600">We could not read this CV. You can fill in your profile yourself instead.</p>
+      <%= link_to "Continue manually", new_candidate_profile_path, class: "btn" %>
+    <% else %>
+      <p class="text-sm text-gray-600">Analyzing your CV…</p>
+    <% end %>
+  </div>
+</div>
 
-<%= link_to "Upload a different CV", new_candidate_document_path %>
+<div class="mt-6">
+  <%= link_to "Upload a different CV", new_candidate_document_path, class: "btn-secondary" %>
+</div>

@@ -1,0 +1,12 @@
+<%# Renders a labelled group of check boxes for one of CandidateProfile's array columns. %>
+<div>
+  <span class="field-label"><%= label %></span>
+
+  <div class="grid gap-2 <%= columns %>">
+    <%= form.collection_check_boxes attribute, collection, :itself, :humanize, include_hidden: false do |box| %>
+      <label class="flex items-center text-sm text-gray-700">
+        <%= box.check_box(class: "checkbox") %><%= box.text %>
+      </label>
+    <% end %>
+  </div>
+</div>

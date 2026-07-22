@@ -1,46 +1,50 @@
 <% content_for :title, "Your profile" %>
 
-<h1>Your profile</h1>
+<h1 class="mb-6 text-2xl font-semibold">Your profile</h1>
 
-<dl>
-  <dt>Name</dt>
-  <dd><%= "#{@candidate_profile.first_name} #{@candidate_profile.last_name}" %></dd>
+<div class="card">
+  <dl class="grid grid-cols-3 gap-y-3 text-sm">
+    <dt class="font-medium text-gray-500">Name</dt>
+    <dd class="col-span-2"><%= "#{@candidate_profile.first_name} #{@candidate_profile.last_name}" %></dd>
 
-  <dt>Email</dt>
-  <dd><%= @candidate_profile.email %></dd>
+    <dt class="font-medium text-gray-500">Email</dt>
+    <dd class="col-span-2"><%= @candidate_profile.email %></dd>
 
-  <dt>Phone number</dt>
-  <dd><%= @candidate_profile.phone_number %></dd>
+    <dt class="font-medium text-gray-500">Phone number</dt>
+    <dd class="col-span-2"><%= @candidate_profile.phone_number %></dd>
 
-  <dt>City</dt>
-  <dd><%= [ @candidate_profile.city, @candidate_profile.country ].compact_blank.join(", ") %></dd>
+    <dt class="font-medium text-gray-500">City</dt>
+    <dd class="col-span-2"><%= [ @candidate_profile.city, @candidate_profile.country ].compact_blank.join(", ") %></dd>
 
-  <dt>Job function</dt>
-  <dd><%= @candidate_profile.job_function.humanize %></dd>
+    <dt class="font-medium text-gray-500">Job function</dt>
+    <dd class="col-span-2"><%= @candidate_profile.job_function.humanize %></dd>
 
-  <dt>Search status</dt>
-  <dd><%= @candidate_profile.search_status.humanize %></dd>
+    <dt class="font-medium text-gray-500">Search status</dt>
+    <dd class="col-span-2"><%= @candidate_profile.search_status.humanize %></dd>
 
-  <dt>Preferred regions</dt>
-  <dd><%= @candidate_profile.preferred_regions.map(&:humanize).to_sentence %></dd>
+    <dt class="font-medium text-gray-500">Preferred regions</dt>
+    <dd class="col-span-2"><%= @candidate_profile.preferred_regions.map(&:humanize).to_sentence %></dd>
 
-  <dt>Maximum travel time</dt>
-  <dd><%= @candidate_profile.max_travel_time %> minutes</dd>
+    <dt class="font-medium text-gray-500">Maximum travel time</dt>
+    <dd class="col-span-2"><%= @candidate_profile.max_travel_time %> minutes</dd>
 
-  <dt>Employment types</dt>
-  <dd><%= @candidate_profile.employment_types.map(&:humanize).to_sentence %></dd>
+    <dt class="font-medium text-gray-500">Employment types</dt>
+    <dd class="col-span-2"><%= @candidate_profile.employment_types.map(&:humanize).to_sentence %></dd>
 
-  <dt>Years of experience</dt>
-  <dd><%= @candidate_profile.years_of_experience %></dd>
+    <dt class="font-medium text-gray-500">Years of experience</dt>
+    <dd class="col-span-2"><%= @candidate_profile.years_of_experience %></dd>
 
-  <dt>Available working days</dt>
-  <dd><%= @candidate_profile.available_working_days.map(&:humanize).to_sentence %></dd>
+    <dt class="font-medium text-gray-500">Available working days</dt>
+    <dd class="col-span-2"><%= @candidate_profile.available_working_days.map(&:humanize).to_sentence %></dd>
 
-  <dt>Available from</dt>
-  <dd><%= l @candidate_profile.available_from, format: :long %></dd>
-</dl>
+    <dt class="font-medium text-gray-500">Available from</dt>
+    <dd class="col-span-2"><%= l @candidate_profile.available_from, format: :long %></dd>
+  </dl>
 
-<% if @candidate_profile.professional_summary.present? %>
-  <h2>Professional summary</h2>
-  <p><%= @candidate_profile.professional_summary %></p>
-<% end %>
+  <% if @candidate_profile.professional_summary.present? %>
+    <div class="mt-6 border-t border-gray-200 pt-6">
+      <h2 class="mb-2 text-sm font-medium text-gray-500">Professional summary</h2>
+      <p class="text-sm text-gray-700"><%= @candidate_profile.professional_summary %></p>
+    </div>
+  <% end %>
+</div>

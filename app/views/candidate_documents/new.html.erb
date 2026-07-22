@@ -1,28 +1,27 @@
 <% content_for :title, "Upload your CV" %>
 
-<h1>Upload your CV</h1>
+<h1 class="mb-2 text-2xl font-semibold">Upload your CV</h1>
 
-<p>
+<p class="mb-6 text-sm text-gray-600">
   We will automatically fill in as much of your candidate profile as possible.
   You can review and edit everything before saving.
 </p>
 
-<%= form_with model: @candidate_document, url: candidate_documents_path do |form| %>
-  <% if @candidate_document.errors.any? %>
-    <ul class="errors">
-      <% @candidate_document.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-    </ul>
-  <% end %>
+<%= form_with model: @candidate_document, url: candidate_documents_path, class: "card space-y-4" do |form| %>
+  <%= render "shared/form_errors", model: @candidate_document %>
 
   <div>
-    <%= form.label :file, "Choose your CV" %>
-    <%= form.file_field :file, accept: CandidateDocument::CONTENT_TYPES.join(",") %>
-    <p>PDF, DOC or DOCX, up to <%= number_to_human_size(CandidateDocument.max_file_size) %>.</p>
+    <%= form.label :file, "Choose your CV", class: "field-label" %>
+    <%= form.file_field :file, accept: CandidateDocument::CONTENT_TYPES.join(","),
+                        class: "field file:mr-3 file:rounded file:border-0 file:bg-gray-100 file:px-3 file:py-1 file:text-sm" %>
+    <p class="mt-1 text-xs text-gray-500">
+      PDF, DOC or DOCX, up to <%= number_to_human_size(CandidateDocument.max_file_size) %>.
+    </p>
   </div>
 
-  <%= form.submit "Upload CV" %>
+  <%= form.submit "Upload CV", class: "btn" %>
 <% end %>
 
-<%= button_to "Sign out", session_path, method: :delete %>
+<div class="mt-6">
+  <%= button_to "Sign out", session_path, method: :delete, class: "btn-secondary" %>
+</div>

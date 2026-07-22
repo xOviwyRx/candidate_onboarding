@@ -1,93 +1,113 @@
 <% content_for :title, "Complete your profile" %>
 
-<h1>Complete your profile</h1>
+<h1 class="mb-2 text-2xl font-semibold">Complete your profile</h1>
 
-<p>We filled in what we could read from your CV. Please check it and complete the rest.</p>
+<p class="mb-6 text-sm text-gray-600">
+  We filled in what we could read from your CV. Please check it and complete the rest.
+</p>
 
-<%= form_with model: @candidate_profile, url: candidate_profile_path do |form| %>
-  <% if @candidate_profile.errors.any? %>
-    <ul class="errors">
-      <% @candidate_profile.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-    </ul>
-  <% end %>
+<%= form_with model: @candidate_profile, url: candidate_profile_path, class: "space-y-6" do |form| %>
+  <%= render "shared/form_errors", model: @candidate_profile %>
 
-  <fieldset>
-    <legend>Personal details</legend>
+  <fieldset class="card space-y-4">
+    <legend class="legend">Personal details</legend>
 
-    <div><%= form.label :first_name %> <%= form.text_field :first_name %></div>
-    <div><%= form.label :last_name %> <%= form.text_field :last_name %></div>
-    <div><%= form.label :email %> <%= form.email_field :email %></div>
-    <div><%= form.label :phone_number %> <%= form.telephone_field :phone_number %></div>
-    <div><%= form.label :city, "City / place of residence" %> <%= form.text_field :city %></div>
-    <div><%= form.label :country %> <%= form.text_field :country %></div>
-  </fieldset>
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div>
+        <%= form.label :first_name, class: "field-label" %>
+        <%= form.text_field :first_name, class: "field" %>
+      </div>
 
-  <fieldset>
-    <legend>Job preferences</legend>
+      <div>
+        <%= form.label :last_name, class: "field-label" %>
+        <%= form.text_field :last_name, class: "field" %>
+      </div>
+    </div>
 
     <div>
-      <%= form.label :job_function, "Desired job function" %>
+      <%= form.label :email, class: "field-label" %>
+      <%= form.email_field :email, class: "field" %>
+    </div>
+
+    <div>
+      <%= form.label :phone_number, class: "field-label" %>
+      <%= form.telephone_field :phone_number, class: "field" %>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div>
+        <%= form.label :city, "City / place of residence", class: "field-label" %>
+        <%= form.text_field :city, class: "field" %>
+      </div>
+
+      <div>
+        <%= form.label :country, class: "field-label" %>
+        <%= form.text_field :country, class: "field" %>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="card space-y-4">
+    <legend class="legend">Job preferences</legend>
+
+    <div>
+      <%= form.label :job_function, "Desired job function", class: "field-label" %>
       <%= form.select :job_function,
                       CandidateProfile::JOB_FUNCTIONS.map { |value| [ value.humanize, value ] },
-                      include_blank: "Please choose" %>
+                      { include_blank: "Please choose" }, class: "field" %>
     </div>
 
     <div>
-      <%= form.label :search_status %>
+      <%= form.label :search_status, class: "field-label" %>
       <%= form.select :search_status,
                       CandidateProfile::SEARCH_STATUSES.map { |value| [ value.humanize, value ] },
-                      include_blank: "Please choose" %>
+                      { include_blank: "Please choose" }, class: "field" %>
     </div>
 
     <div>
-      <%= form.label :max_travel_time, "Maximum travel time (minutes)" %>
-      <%= form.number_field :max_travel_time, min: 0 %>
+      <%= form.label :max_travel_time, "Maximum travel time (minutes)", class: "field-label" %>
+      <%= form.number_field :max_travel_time, min: 0, class: "field" %>
     </div>
 
-    <fieldset>
-      <legend>Preferred regions</legend>
-      <%= form.collection_check_boxes :preferred_regions, CandidateProfile::PREFERRED_REGIONS,
-                                      :itself, :humanize, include_hidden: false %>
-    </fieldset>
+    <%= render "shared/check_box_group", form: form, attribute: :preferred_regions,
+               collection: CandidateProfile::PREFERRED_REGIONS,
+               label: "Preferred regions", columns: "sm:grid-cols-3" %>
   </fieldset>
 
-  <fieldset>
-    <legend>Employment</legend>
+  <fieldset class="card space-y-4">
+    <legend class="legend">Employment</legend>
 
-    <fieldset>
-      <legend>Desired employment type</legend>
-      <%= form.collection_check_boxes :employment_types, CandidateProfile::EMPLOYMENT_TYPES,
-                                      :itself, :humanize, include_hidden: false %>
-    </fieldset>
+    <%= render "shared/check_box_group", form: form, attribute: :employment_types,
+               collection: CandidateProfile::EMPLOYMENT_TYPES,
+               label: "Desired employment type", columns: "sm:grid-cols-3" %>
 
     <div>
-      <%= form.label :years_of_experience, "Years of dental experience" %>
-      <%= form.number_field :years_of_experience, min: 0, step: 0.5 %>
+      <%= form.label :years_of_experience, "Years of dental experience", class: "field-label" %>
+      <%= form.number_field :years_of_experience, min: 0, step: 0.5, class: "field" %>
     </div>
   </fieldset>
 
-  <fieldset>
-    <legend>Availability</legend>
+  <fieldset class="card space-y-4">
+    <legend class="legend">Availability</legend>
 
-    <fieldset>
-      <legend>Available working days</legend>
-      <%= form.collection_check_boxes :available_working_days, CandidateProfile::WORKING_DAYS,
-                                      :itself, :humanize, include_hidden: false %>
-    </fieldset>
-
-    <div><%= form.label :available_from %> <%= form.date_field :available_from %></div>
-  </fieldset>
-
-  <fieldset>
-    <legend>Additional information</legend>
+    <%= render "shared/check_box_group", form: form, attribute: :available_working_days,
+               collection: CandidateProfile::WORKING_DAYS,
+               label: "Available working days", columns: "sm:grid-cols-4" %>
 
     <div>
-      <%= form.label :professional_summary %>
-      <%= form.text_area :professional_summary, rows: 4 %>
+      <%= form.label :available_from, class: "field-label" %>
+      <%= form.date_field :available_from, class: "field" %>
     </div>
   </fieldset>
 
-  <%= form.submit "Save profile" %>
+  <fieldset class="card space-y-4">
+    <legend class="legend">Additional information</legend>
+
+    <div>
+      <%= form.label :professional_summary, class: "field-label" %>
+      <%= form.text_area :professional_summary, rows: 4, class: "field" %>
+    </div>
+  </fieldset>
+
+  <%= form.submit "Save profile", class: "btn" %>
 <% end %>
