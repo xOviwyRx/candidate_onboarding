@@ -96,6 +96,46 @@ RSpec.describe "CandidateProfiles", type: :request do
         post candidate_profile_path, params: { candidate_profile: valid_attributes.merge(city: "") }
       }.not_to change(CandidateProfile, :count)
     end
+
+    it "saves every education and work experience row submitted with the profile" do
+      post candidate_profile_path, params: { candidate_profile: valid_attributes.merge(
+        educations_attributes: {
+          "0" => { study: "Mondzorgkunde", institution: "Hogeschool Utrecht" },
+          "1" => { study: "Tandheelkunde", institution: "ACTA" }
+        },
+        work_experiences_attributes: {
+          "0" => { job_title: "Dental Hygienist", company_name: "Tandartspraktijk Centrum" },
+          "1" => { job_title: "Dental Assistant", company_name: "Praktijk Noord" }
+        }
+      ) }
+
+      profile = user.reload.candidate_profile
+
+      aggregate_failures do
+        expect(profile.educations.pluck(:study)).to contain_exactly("Mondzorgkunde", "Tandheelkunde")
+        expect(profile.work_experiences.pluck(:job_title)).to contain_exactly("Dental Hygienist", "Dental Assistant")
+      end
+    end
+
+    context "with rows the candidate left blank" do
+      it "does NOT save them" do
+        post candidate_profile_path, params: { candidate_profile: valid_attributes.merge(
+          educations_attributes: {
+            "0" => { study: "", institution: "", location: "", level: "", start_date: "", end_date: "" }
+          },
+          work_experiences_attributes: {
+            "0" => { job_title: "", company_name: "", responsibilities: "", start_date: "", end_date: "" }
+          }
+        ) }
+
+        profile = user.reload.candidate_profile
+
+        aggregate_failures do
+          expect(profile.educations).to be_empty
+          expect(profile.work_experiences).to be_empty
+        end
+      end
+    end
   end
 
   describe "GET /candidate_profile" do

@@ -4,6 +4,9 @@ class CandidateProfile < ApplicationRecord
   has_many :educations, dependent: :destroy
   has_many :work_experiences, dependent: :destroy
 
+  accepts_nested_attributes_for :educations, reject_if: :all_blank
+  accepts_nested_attributes_for :work_experiences, reject_if: :all_blank
+
   PHONE_NUMBER_FORMAT = /\A\+?[0-9\s\-()]{6,20}\z/
 
   JOB_FUNCTIONS = %w[
