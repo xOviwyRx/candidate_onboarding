@@ -1,0 +1,36 @@
+<div class="rounded-md border border-gray-200 p-4 space-y-4">
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div>
+      <%= form.label :job_title, class: "field-label" %>
+      <%= form.text_field :job_title, class: "field" %>
+    </div>
+
+    <div>
+      <%= form.label :company_name, class: "field-label" %>
+      <%= form.text_field :company_name, class: "field" %>
+    </div>
+  </div>
+
+  <div>
+    <%= form.label :responsibilities, class: "field-label" %>
+    <%= form.text_area :responsibilities, rows: 3, class: "field" %>
+  </div>
+
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div>
+      <%= form.label :start_date, class: "field-label" %>
+      <%= form.date_field :start_date, class: "field" %>
+    </div>
+
+    <div>
+      <%= form.label :end_date, class: "field-label" %>
+      <%= form.date_field :end_date, class: "field" %>
+    </div>
+  </div>
+
+  <%# include_hidden: false keeps an untouched row genuinely blank, so reject_if: :all_blank drops it. %>
+  <label class="flex items-center text-sm text-gray-700">
+    <%= form.check_box :current_job, class: "checkbox", include_hidden: false %>
+    This is my current job
+  </label>
+</div>

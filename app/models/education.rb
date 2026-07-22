@@ -1,5 +1,14 @@
 class Education < ApplicationRecord
-  LEVELS = %w[mbo hbo bachelor master doctor course].freeze
+  LEVEL_LABELS = {
+    "mbo" => "MBO",
+    "hbo" => "HBO",
+    "bachelor" => "Bachelor",
+    "master" => "Master",
+    "doctor" => "Doctor",
+    "course" => "Course"
+  }.freeze
+
+  LEVELS = LEVEL_LABELS.keys.freeze
 
   belongs_to :candidate_profile
 

@@ -50,6 +50,22 @@ RSpec.describe "CandidateProfiles", type: :request do
       expect(response.body).to include("Amsterdam")
     end
 
+    it "prefills the education and work experience rows read from the CV" do
+      sign_in(user)
+      create(:candidate_document, user: user, parsing_status: :completed, parsed_at: Time.current,
+                                  parsed_data: {
+                                    "educations" => [ { "study" => "Mondzorgkunde" } ],
+                                    "work_experiences" => [ { "job_title" => "Dental Hygienist" } ]
+                                  })
+
+      get new_candidate_profile_path
+
+      aggregate_failures do
+        expect(response.body).to include("Mondzorgkunde")
+        expect(response.body).to include("Dental Hygienist")
+      end
+    end
+
     it "renders an empty form when no CV was parsed, so the candidate can continue manually" do
       sign_in(user)
 

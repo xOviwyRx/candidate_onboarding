@@ -1,0 +1,38 @@
+<div class="rounded-md border border-gray-200 p-4 space-y-4">
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div>
+      <%= form.label :study, "Study / course", class: "field-label" %>
+      <%= form.text_field :study, class: "field" %>
+    </div>
+
+    <div>
+      <%= form.label :institution, class: "field-label" %>
+      <%= form.text_field :institution, class: "field" %>
+    </div>
+  </div>
+
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div>
+      <%= form.label :location, "City and country", class: "field-label" %>
+      <%= form.text_field :location, class: "field" %>
+    </div>
+
+    <div>
+      <%= form.label :level, class: "field-label" %>
+      <%= form.select :level, Education::LEVEL_LABELS.map(&:reverse),
+                      { include_blank: "Please choose" }, class: "field" %>
+    </div>
+  </div>
+
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div>
+      <%= form.label :start_date, class: "field-label" %>
+      <%= form.date_field :start_date, class: "field" %>
+    </div>
+
+    <div>
+      <%= form.label :end_date, class: "field-label" %>
+      <%= form.date_field :end_date, class: "field" %>
+    </div>
+  </div>
+</div>

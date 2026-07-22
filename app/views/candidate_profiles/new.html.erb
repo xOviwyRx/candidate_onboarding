@@ -88,6 +88,22 @@
   </fieldset>
 
   <fieldset class="card space-y-4">
+    <legend class="legend">Education</legend>
+
+    <%= form.fields_for :educations do |education_form| %>
+      <%= render "education_fields", form: education_form %>
+    <% end %>
+  </fieldset>
+
+  <fieldset class="card space-y-4">
+    <legend class="legend">Work experience</legend>
+
+    <%= form.fields_for :work_experiences do |work_experience_form| %>
+      <%= render "work_experience_fields", form: work_experience_form %>
+    <% end %>
+  </fieldset>
+
+  <fieldset class="card space-y-4">
     <legend class="legend">Availability</legend>
 
     <%= render "shared/check_box_group", form: form, attribute: :available_working_days,
