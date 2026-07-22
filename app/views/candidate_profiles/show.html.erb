@@ -31,6 +31,29 @@
     <dt class="font-medium text-gray-500">Employment types</dt>
     <dd class="col-span-2"><%= @candidate_profile.employment_types.map(&:humanize).to_sentence %></dd>
 
+    <% if @candidate_profile.desired_gross_salary.present? %>
+      <dt class="font-medium text-gray-500">Desired gross salary</dt>
+      <dd class="col-span-2"><%= number_to_currency(@candidate_profile.desired_gross_salary, unit: "€") %> per month</dd>
+    <% end %>
+
+    <% if @candidate_profile.desired_percentage.present? %>
+      <dt class="font-medium text-gray-500">Desired percentage</dt>
+      <dd class="col-span-2"><%= @candidate_profile.desired_percentage %>%</dd>
+    <% end %>
+
+    <% if @candidate_profile.average_daily_revenue.present? %>
+      <dt class="font-medium text-gray-500">Average daily revenue</dt>
+      <dd class="col-span-2"><%= number_to_currency(@candidate_profile.average_daily_revenue, unit: "€") %></dd>
+    <% end %>
+
+    <% if @candidate_profile.big_registration_status.present? %>
+      <dt class="font-medium text-gray-500">BIG registration</dt>
+      <dd class="col-span-2">
+        <%= [ @candidate_profile.big_registration_status.humanize,
+              @candidate_profile.big_number ].compact_blank.join(" · ") %>
+      </dd>
+    <% end %>
+
     <dt class="font-medium text-gray-500">Years of experience</dt>
     <dd class="col-span-2"><%= @candidate_profile.years_of_experience %></dd>
 
