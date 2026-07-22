@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   resource :session, only: %i[new create destroy]
   resources :candidate_documents, only: %i[new create show]
+  resource  :candidate_profile,   only: %i[new create show]
 
   root "candidate_documents#new"
 end

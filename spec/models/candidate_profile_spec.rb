@@ -45,6 +45,24 @@ RSpec.describe CandidateProfile, type: :model do
     end
   end
 
+  describe "preferred regions" do
+    it "rejects a region that is not a Dutch province" do
+      profile = build(:candidate_profile, preferred_regions: %w[utrecht atlantis])
+      profile.validate
+
+      expect(profile.errors[:preferred_regions]).to include("contains invalid values: atlantis")
+    end
+  end
+
+  describe "employment types" do
+    it "rejects an employment type the platform does not offer" do
+      profile = build(:candidate_profile, employment_types: %w[employed volunteering])
+      profile.validate
+
+      expect(profile.errors[:employment_types]).to include("contains invalid values: volunteering")
+    end
+  end
+
   describe "transport types" do
     it "rejects a transport the platform does not offer" do
       profile = build(:candidate_profile, transport_types: %w[car hovercraft])

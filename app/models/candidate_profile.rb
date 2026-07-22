@@ -18,6 +18,13 @@ class CandidateProfile < ApplicationRecord
 
   TRANSPORT_TYPES = %w[bike scooter public_transport car].freeze
 
+  PREFERRED_REGIONS = %w[
+    drenthe flevoland friesland gelderland groningen limburg
+    noord_brabant noord_holland overijssel utrecht zeeland zuid_holland
+  ].freeze
+
+  EMPLOYMENT_TYPES = %w[employed self_employed percentage_based].freeze
+
   enum :big_registration_status, {
     registered: "registered",
     in_progress: "in_progress",
@@ -43,9 +50,11 @@ class CandidateProfile < ApplicationRecord
   validates :preferred_regions, presence: true
   validates :employment_types, presence: true
   validates :available_working_days, presence: true
-  validate :available_working_days_valid
 
-  validate :transport_types_valid
+  validate { validate_allowed_values(:preferred_regions, PREFERRED_REGIONS) }
+  validate { validate_allowed_values(:employment_types, EMPLOYMENT_TYPES) }
+  validate { validate_allowed_values(:available_working_days, WORKING_DAYS) }
+  validate { validate_allowed_values(:transport_types, TRANSPORT_TYPES) }
 
   validates :desired_percentage, numericality: { in: 0..100 }, allow_nil: true
 
@@ -53,13 +62,10 @@ class CandidateProfile < ApplicationRecord
 
   private
 
-  def available_working_days_valid
-    invalid = available_working_days.to_a - WORKING_DAYS
-    errors.add(:available_working_days, "contains invalid values: #{invalid.join(', ')}") if invalid.any?
-  end
+  def validate_allowed_values(attribute, allowed)
+    invalid = public_send(attribute).to_a - allowed
+    return if invalid.empty?
 
-  def transport_types_valid
-    invalid = transport_types.to_a - TRANSPORT_TYPES
-    errors.add(:transport_types, "contains invalid values: #{invalid.join(', ')}") if invalid.any?
+    errors.add(attribute, "contains invalid values: #{invalid.join(', ')}")
   end
 end

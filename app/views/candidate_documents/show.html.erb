@@ -17,11 +17,11 @@
 </dl>
 
 <% if @candidate_document.completed? %>
-  <p>We read your CV. Please review the details we found before saving your profile.</p>
-  <%# The review form arrives with the next phase; parsed data is shown meanwhile. %>
-  <pre><%= JSON.pretty_generate(@candidate_document.parsed_data) %></pre>
+  <p>We read your CV. Please check the details we found and complete the rest.</p>
+  <%= link_to "Review my profile", new_candidate_profile_path %>
 <% elsif @candidate_document.failed? %>
   <p>We could not read this CV. You can fill in your profile yourself instead.</p>
+  <%= link_to "Continue manually", new_candidate_profile_path %>
 <% else %>
   <p>Analyzing your CV…</p>
 <% end %>
