@@ -10,10 +10,22 @@
 <%= form_with model: @candidate_document, url: candidate_documents_path, class: "card space-y-4" do |form| %>
   <%= render "shared/form_errors", model: @candidate_document %>
 
-  <div>
+  <div data-controller="file-drop"
+       data-file-drop-active-class="border-blue-500 bg-blue-50"
+       data-action="dragover->file-drop#over dragleave->file-drop#leave drop->file-drop#drop">
     <%= form.label :file, "Choose your CV", class: "field-label" %>
-    <%= form.file_field :file, accept: CandidateDocument::CONTENT_TYPES.join(","),
-                        class: "field file:mr-3 file:rounded file:border-0 file:bg-gray-100 file:px-3 file:py-1 file:text-sm" %>
+
+    <div class="rounded-md border-2 border-dashed border-gray-300 p-6 text-center"
+         data-file-drop-target="zone">
+      <p class="text-sm text-gray-600">Drag your CV here, or choose a file below.</p>
+
+      <%= form.file_field :file, accept: CandidateDocument::CONTENT_TYPES.join(","),
+                          data: { file_drop_target: "input", action: "file-drop#showFilename" },
+                          class: "mt-3 text-sm file:mr-3 file:rounded file:border-0 file:bg-gray-100 file:px-3 file:py-1 file:text-sm" %>
+
+      <p class="mt-2 text-sm font-medium text-gray-800" data-file-drop-target="filename"></p>
+    </div>
+
     <p class="mt-1 text-xs text-gray-500">
       PDF, DOC or DOCX, up to <%= number_to_human_size(CandidateDocument.max_file_size) %>.
     </p>
