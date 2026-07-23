@@ -25,6 +25,9 @@ class CandidateProfilesController < ApplicationController
 
     if @candidate_profile.save
       current_user.record_consent
+      # §10: the CV was uploaded before this profile existed, so it is attached
+      # to it now that there is one to attach it to.
+      current_user.candidate_documents.update_all(candidate_profile_id: @candidate_profile.id)
       RecruitmentMailer.candidate_onboarding_completed(@candidate_profile).deliver_later
       redirect_to candidate_profile_path, notice: "Your profile has been saved."
     else

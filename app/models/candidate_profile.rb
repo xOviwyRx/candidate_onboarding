@@ -4,8 +4,13 @@ class CandidateProfile < ApplicationRecord
   has_many :educations, dependent: :destroy
   has_many :work_experiences, dependent: :destroy
   has_many :candidate_languages, dependent: :destroy
+  has_many :languages, through: :candidate_languages
   has_many :candidate_skills, dependent: :destroy
   has_many :skills, through: :candidate_skills
+
+  # The CV belongs to the user, who uploaded it before any profile existed, so
+  # removing a profile unlinks it rather than deleting it.
+  has_many :candidate_documents, dependent: :nullify
 
   accepts_nested_attributes_for :educations, reject_if: :all_blank
   accepts_nested_attributes_for :work_experiences, reject_if: :all_blank

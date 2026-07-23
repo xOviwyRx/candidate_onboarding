@@ -204,6 +204,14 @@ RSpec.describe "CandidateProfiles", type: :request do
       end
     end
 
+    it "attaches the CV uploaded earlier to the profile it belongs to" do
+      document = create(:candidate_document, user: user)
+
+      post candidate_profile_path, params: { candidate_profile: valid_attributes }
+
+      expect(document.reload.candidate_profile).to eq(user.reload.candidate_profile)
+    end
+
     it "notifies the recruitment team without making the candidate wait for it" do
       expect {
         post candidate_profile_path, params: { candidate_profile: valid_attributes }
