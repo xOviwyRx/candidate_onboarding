@@ -86,17 +86,26 @@ class CandidateProfile < ApplicationRecord
     BIG_JOB_FUNCTIONS.include?(job_function)
   end
 
+  # A BIG number only applies once the candidate says they are registered, so it
+  # needs the status as well as the job function.
+  def big_number_relevant?
+    big_relevant? && registered?
+  end
+
   private
 
+  # The status is cleared before the number is checked, so big_number_relevant?
+  # reads the value that will actually be saved.
   def clear_irrelevant_compensation
     self.desired_gross_salary = nil unless salary_relevant?
     self.desired_percentage = nil unless percentage_relevant?
 
-    return if big_relevant?
+    unless big_relevant?
+      self.average_daily_revenue = nil
+      self.big_registration_status = nil
+    end
 
-    self.average_daily_revenue = nil
-    self.big_registration_status = nil
-    self.big_number = nil
+    self.big_number = nil unless big_number_relevant?
   end
 
   def validate_allowed_values(attribute, allowed)

@@ -111,10 +111,13 @@
           <%= form.label :big_registration_status, "BIG registration status", class: "field-label" %>
           <%= form.select :big_registration_status,
                           CandidateProfile.big_registration_statuses.keys.map { |value| [ value.humanize, value ] },
-                          { include_blank: "Please choose" }, class: "field" %>
+                          { include_blank: "Please choose" },
+                          class: "field",
+                          data: { conditional_fields_target: "bigRegistrationStatus",
+                                  action: "conditional-fields#refresh" } %>
         </div>
 
-        <div>
+        <div data-conditional-fields-target="section" data-show-for="big_registered">
           <%= form.label :big_number, "BIG number", class: "field-label" %>
           <%= form.text_field :big_number, class: "field" %>
         </div>

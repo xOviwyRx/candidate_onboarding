@@ -127,5 +127,12 @@ RSpec.describe CandidateProfile, type: :model do
 
       expect(profile).to be_valid
     end
+
+    it "clears a BIG number from a candidate who is not registered yet" do
+      profile = build(:candidate_profile, :big_registered, big_registration_status: "in_progress")
+      profile.validate
+
+      expect(profile.big_number).to be_nil
+    end
   end
 end
