@@ -26,6 +26,26 @@ RSpec.describe CvParser::Patterns do
     end
   end
 
+  describe "city and country" do
+    it "reads both from a labelled line" do
+      expect(described_class.new("Woonplaats: Utrecht, Nederland").call)
+        .to include(city: "Utrecht", country: "Nederland")
+    end
+
+    it "reads a city that is two words" do
+      expect(described_class.new("Plaats: Den Haag").call).to include(city: "Den Haag")
+    end
+
+    it "falls back to the city beside a postcode" do
+      expect(described_class.new("Sanne Bakker\n3512 JE Utrecht").call).to include(city: "Utrecht")
+    end
+
+    it "does not read a house number as the city" do
+      expect(described_class.new("Adres: Kerkstraat 12, 3512 JE Utrecht").call)
+        .to include(city: "Utrecht")
+    end
+  end
+
   describe "BIG number" do
     [ "BIG-nummer: 89123456789", "BIG number 89123456789", "bignr.89123456789" ].each do |text|
       it "reads #{text.inspect}" do

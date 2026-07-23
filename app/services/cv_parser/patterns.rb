@@ -6,6 +6,11 @@ module CvParser
     EMAIL = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i
     PHONE = /(?:\+|00)\d[\d\s\-()]{6,18}\d|\b0\d[\d\s\-()]{6,14}\d/
     BIG_NUMBER = /BIG[\s\-]*\w*[\s:.\-]*(\d{11})/i
+
+    # "Adres" is deliberately absent: on a street line the house number would be
+    # read as the city. Those lines are covered by POSTCODE_CITY instead.
+    LABELLED_CITY = /^\s*(?:woonplaats|plaats|city|location|locatie)\s*[:\-]\s*(.+)$/i
+    POSTCODE_CITY = /\b\d{4}\s?[A-Z]{2}\s+(\p{Lu}[\p{L}'’-]+(?:\s\p{Lu}[\p{L}'’-]+)?)/
     # The window between the number and the word "experience" is measured in
     # characters, not words, because real phrasing varies: "4+ years of backend
     # development experience". Excluding . and \n stops it spanning sentences.
@@ -24,6 +29,8 @@ module CvParser
       {
         email: email,
         phone_number: phone_number,
+        city: city,
+        country: country,
         big_number: big_number,
         years_of_experience: years_of_experience
       }.compact
@@ -44,6 +51,22 @@ module CvParser
         .scan(PHONE)
         .find { |match| PLAUSIBLE_PHONE_DIGITS.cover?(match.count("0-9")) }
         &.squish
+    end
+
+    def city
+      labelled_location.first || text[POSTCODE_CITY, 1]
+    end
+
+    def country
+      labelled_location.second
+    end
+
+    # "Woonplaats: Utrecht, Nederland" splits into the two. A part carrying a
+    # digit is a street address rather than a place, so it is dropped in place,
+    # keeping city and country in their own positions.
+    def labelled_location
+      @labelled_location ||=
+        text[LABELLED_CITY, 1].to_s.split(",").map { |part| part.strip.presence unless part.match?(/\d/) }
     end
 
     def big_number

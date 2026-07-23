@@ -8,7 +8,9 @@ module CvParser
     end
 
     def call
-      Patterns.new(text).call.merge(Name.new(text).call)
+      Patterns.new(text).call
+              .merge(Name.new(text).call)
+              .merge(JobFunction.new(text).call)
     end
 
     private
