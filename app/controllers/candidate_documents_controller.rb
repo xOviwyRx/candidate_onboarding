@@ -6,10 +6,13 @@ class CandidateDocumentsController < ApplicationController
   end
 
   def create
-    @candidate_document = current_user.candidate_documents.new(document_type: "cv")
+    @candidate_document = current_user.candidate_documents.new(
+      document_type: "cv", consent: params.dig(:candidate_document, :consent)
+    )
     @candidate_document.file.attach(params.dig(:candidate_document, :file))
 
     if @candidate_document.save
+      current_user.record_consent
       ParseCandidateCvJob.perform_later(@candidate_document)
       redirect_to @candidate_document
     else

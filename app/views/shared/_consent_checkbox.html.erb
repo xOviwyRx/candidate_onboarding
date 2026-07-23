@@ -1,0 +1,12 @@
+<%# §9's consent gate. Unlike the profile form's check boxes this keeps Rails'
+    hidden "0" field: the acceptance validator skips nil, so without it a request
+    that simply omits the parameter would pass unchecked. %>
+<div>
+  <label class="flex items-start gap-2 text-sm text-gray-700">
+    <%= form.check_box :consent, class: "checkbox mt-0.5" %>
+    <span>
+      I agree that my CV and profile information may be processed to create and
+      improve my candidate profile.
+    </span>
+  </label>
+</div>

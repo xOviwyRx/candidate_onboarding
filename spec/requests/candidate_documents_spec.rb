@@ -32,46 +32,66 @@ RSpec.describe "CandidateDocuments", type: :request do
 
     it "stores the uploaded CV against the signed in candidate" do
       expect {
-        post candidate_documents_path, params: { candidate_document: { file: cv_upload } }
+        post candidate_documents_path, params: { candidate_document: { file: cv_upload, consent: "1" } }
       }.to change(user.candidate_documents, :count).by(1)
     end
 
     it "redirects to the uploaded document" do
-      post candidate_documents_path, params: { candidate_document: { file: cv_upload } }
+      post candidate_documents_path, params: { candidate_document: { file: cv_upload, consent: "1" } }
 
       expect(response).to redirect_to(CandidateDocument.last)
     end
 
     it "records the document as pending, ready to be parsed" do
-      post candidate_documents_path, params: { candidate_document: { file: cv_upload } }
+      post candidate_documents_path, params: { candidate_document: { file: cv_upload, consent: "1" } }
 
       expect(CandidateDocument.last).to be_pending
     end
 
     it "queues the CV for parsing, so the upload request does not wait for it" do
       expect {
-        post candidate_documents_path, params: { candidate_document: { file: cv_upload } }
+        post candidate_documents_path, params: { candidate_document: { file: cv_upload, consent: "1" } }
       }.to have_enqueued_job(ParseCandidateCvJob)
     end
 
     it "does NOT queue parsing when the upload was rejected" do
       expect {
         post candidate_documents_path,
-             params: { candidate_document: { file: cv_upload(filename: "cv.txt", content_type: "text/plain") } }
+             params: { candidate_document: { file: cv_upload(filename: "cv.txt", content_type: "text/plain"), consent: "1" } }
       }.not_to have_enqueued_job(ParseCandidateCvJob)
     end
 
     it "rejects a file type the platform does not accept" do
       expect {
         post candidate_documents_path,
-             params: { candidate_document: { file: cv_upload(filename: "cv.txt", content_type: "text/plain") } }
+             params: { candidate_document: { file: cv_upload(filename: "cv.txt", content_type: "text/plain"), consent: "1" } }
       }.not_to change(CandidateDocument, :count)
     end
 
     it "re-renders the form when no file was chosen" do
-      post candidate_documents_path, params: { candidate_document: {} }
+      post candidate_documents_path, params: { candidate_document: { consent: "1" } }
 
       expect(response).to have_http_status(:unprocessable_content)
+    end
+
+    it "records when the candidate gave consent" do
+      post candidate_documents_path, params: { candidate_document: { file: cv_upload, consent: "1" } }
+
+      expect(user.reload.consent_given_at).to be_present
+    end
+
+    context "without consent" do
+      it "refuses the upload when the box was left unticked" do
+        expect {
+          post candidate_documents_path, params: { candidate_document: { file: cv_upload, consent: "0" } }
+        }.not_to change(CandidateDocument, :count)
+      end
+
+      it "refuses the upload when the parameter is missing altogether" do
+        expect {
+          post candidate_documents_path, params: { candidate_document: { file: cv_upload } }
+        }.not_to change(CandidateDocument, :count)
+      end
     end
   end
 

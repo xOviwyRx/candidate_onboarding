@@ -9,6 +9,7 @@ FactoryBot.define do
 
     user
     document_type { "cv" }
+    consent { "1" }
 
     after(:build) do |document, evaluator|
       io = if evaluator.fixture

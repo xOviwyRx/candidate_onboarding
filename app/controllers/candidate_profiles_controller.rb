@@ -22,6 +22,7 @@ class CandidateProfilesController < ApplicationController
     @candidate_profile = current_user.build_candidate_profile(candidate_profile_params)
 
     if @candidate_profile.save
+      current_user.record_consent
       redirect_to candidate_profile_path, notice: "Your profile has been saved."
     else
       render :new, status: :unprocessable_content
@@ -94,7 +95,7 @@ class CandidateProfilesController < ApplicationController
       :job_function, :search_status, :max_travel_time, :years_of_experience,
       :available_from, :professional_summary,
       :desired_gross_salary, :desired_percentage, :average_daily_revenue,
-      :big_registration_status, :big_number,
+      :big_registration_status, :big_number, :consent,
       preferred_regions: [], employment_types: [], available_working_days: [], skill_ids: [],
       educations_attributes: EDUCATION_FIELDS,
       work_experiences_attributes: WORK_EXPERIENCE_FIELDS,

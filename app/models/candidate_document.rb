@@ -21,7 +21,14 @@ class CandidateDocument < ApplicationRecord
     failed: "failed"
   }, validate: true
 
+  # §9 requires consent before the CV is processed. Consent belongs to the person
+  # rather than the file, so it is stored on the user; the document only carries
+  # it far enough to be validated alongside the rest of the form.
+  attr_accessor :consent
+
   before_validation :extract_file_metadata, if: -> { file.attached? }
+
+  validate :consent_accepted
 
   validates :file, presence: true
   validates :original_filename, presence: true
@@ -34,6 +41,14 @@ class CandidateDocument < ApplicationRecord
   end
 
   private
+
+  # acceptance: true would skip a nil value, so a request that omits the
+  # parameter would pass unchecked. §9's gate has to reject that too.
+  def consent_accepted
+    return if ActiveModel::Type::Boolean.new.cast(consent)
+
+    errors.add(:consent, "must be accepted before uploading your CV")
+  end
 
   def extract_file_metadata
     self.original_filename = file.filename.to_s

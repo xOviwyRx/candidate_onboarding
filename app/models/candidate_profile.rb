@@ -11,6 +11,13 @@ class CandidateProfile < ApplicationRecord
   accepts_nested_attributes_for :work_experiences, reject_if: :all_blank
   accepts_nested_attributes_for :candidate_languages, reject_if: :all_blank
 
+  # §9's second consent gate, for a candidate who reached this form without
+  # uploading a CV. Nil when the user has already consented, so the acceptance
+  # validator skips it and the check box is not shown again.
+  attr_accessor :consent
+
+  validate :consent_accepted, unless: -> { user&.consented? }
+
   PHONE_NUMBER_FORMAT = /\A\+?[0-9\s\-()]{6,20}\z/
 
   JOB_FUNCTIONS = %w[
@@ -111,6 +118,14 @@ class CandidateProfile < ApplicationRecord
     end
 
     self.big_number = nil unless big_number_relevant?
+  end
+
+  # acceptance: true would skip a nil value, letting a request that omits the
+  # parameter through. Only asked of a candidate who has not consented already.
+  def consent_accepted
+    return if ActiveModel::Type::Boolean.new.cast(consent)
+
+    errors.add(:consent, "must be accepted before saving your profile")
   end
 
   def validate_allowed_values(attribute, allowed)

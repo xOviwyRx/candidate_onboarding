@@ -18,6 +18,7 @@ FactoryBot.define do
     years_of_experience { 5.0 }
     available_working_days { %w[monday tuesday wednesday] }
     available_from { Date.current }
+    consent { "1" }
 
     # §3.1 requires at least one language. Built rather than created so the
     # profile still saves in one go, and skipped when a spec supplies its own.

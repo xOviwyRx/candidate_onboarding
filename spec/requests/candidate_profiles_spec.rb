@@ -19,7 +19,8 @@ RSpec.describe "CandidateProfiles", type: :request do
       preferred_regions: [ "noord_holland" ],
       employment_types: [ "employed" ],
       available_working_days: %w[monday tuesday],
-      candidate_languages_attributes: [ { language_id: create(:language).id, level: "native" } ]
+      candidate_languages_attributes: [ { language_id: create(:language).id, level: "native" } ],
+      consent: "1"
     }
   end
 
@@ -136,6 +137,20 @@ RSpec.describe "CandidateProfiles", type: :request do
         expect(profile.educations.pluck(:study)).to contain_exactly("Mondzorgkunde", "Tandheelkunde")
         expect(profile.work_experiences.pluck(:job_title)).to contain_exactly("Dental Hygienist", "Dental Assistant")
       end
+    end
+
+    it "refuses to save when a candidate who never uploaded a CV has not consented" do
+      post candidate_profile_path, params: { candidate_profile: valid_attributes.except(:consent) }
+
+      expect(response).to have_http_status(:unprocessable_content)
+    end
+
+    it "does NOT ask again for consent already given at upload" do
+      user.record_consent
+
+      post candidate_profile_path, params: { candidate_profile: valid_attributes.except(:consent) }
+
+      expect(response).to redirect_to(candidate_profile_path)
     end
 
     it "saves the skills the candidate ticked" do
