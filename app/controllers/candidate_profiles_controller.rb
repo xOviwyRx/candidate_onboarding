@@ -53,10 +53,20 @@ class CandidateProfilesController < ApplicationController
     parsed_rows("work_experiences", WORK_EXPERIENCE_FIELDS).each { |attrs| @candidate_profile.work_experiences.build(attrs) }
 
     prefill_languages
+    prefill_skills
 
     @candidate_profile.educations.build if @candidate_profile.educations.empty?
     @candidate_profile.work_experiences.build if @candidate_profile.work_experiences.empty?
     @candidate_profile.candidate_languages.build if @candidate_profile.candidate_languages.empty?
+  end
+
+  # §3.6: the parser already matched against the seeded list, so the names come
+  # back straight off it and only need turning into ids for the check boxes.
+  def prefill_skills
+    names = parsed_cv["skills"]
+    return unless names.is_a?(Array)
+
+    @candidate_profile.skill_ids = Skill.where(name: names).ids
   end
 
   # The parser returns platform language names; only ones actually seeded are

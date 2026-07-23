@@ -14,6 +14,14 @@ RSpec.describe Skill, type: :model do
     expect(skill.errors[:job_functions]).to include("contains invalid values: astronaut")
   end
 
+  describe "#terms" do
+    it "offers the name and every synonym to the CV parser" do
+      skill = build(:skill, name: "Periodontology", synonyms: %w[parodontologie paro])
+
+      expect(skill.terms).to eq(%w[Periodontology parodontologie paro])
+    end
+  end
+
   describe ".for_job_function" do
     it "returns only the skills belonging to that function" do
       hygiene = create(:skill, job_functions: %w[dental_hygienist])

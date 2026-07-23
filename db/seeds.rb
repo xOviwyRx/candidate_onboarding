@@ -20,30 +20,37 @@ end
 DENTISTS = %w[general_dentist specialist].freeze
 ASSISTANTS = %w[dental_assistant prevention_assistant paro_prevention_assistant orthodontic_assistant].freeze
 
+# The Dutch spellings are what the CV parser matches on: §5 asks for Dutch and
+# English CVs, and the seeded name is only ever the English one.
 {
-  "Endodontics" => DENTISTS,
-  "Restorative dentistry" => DENTISTS,
-  "Pediatric dentistry" => DENTISTS,
-  "Surgery" => DENTISTS,
-  "Aligners" => DENTISTS,
-  "Periodontology" => [ "dental_hygienist" ],
-  "Scaling" => [ "dental_hygienist" ],
-  "Patient education" => [ "dental_hygienist" ],
-  "Prevention" => [ "dental_hygienist", *ASSISTANTS ],
-  "Chairside assistance" => ASSISTANTS,
-  "Sterilization" => ASSISTANTS,
-  "Orthodontics" => ASSISTANTS,
-  "Planning" => [ "front_office" ],
-  "Phone handling" => [ "front_office" ],
-  "Invoicing" => [ "front_office" ],
-  "Patient communication" => [ "front_office" ],
-  "Team management" => [ "practice_manager" ],
-  "Scheduling" => [ "practice_manager" ],
-  "HR" => [ "practice_manager" ],
-  "Practice operations" => [ "practice_manager" ],
-  "Prosthetics" => [ "dental_technician" ],
-  "CAD/CAM" => [ "dental_technician" ],
-  "Crown and bridge work" => [ "dental_technician" ]
-}.each do |name, job_functions|
-  Skill.find_or_create_by!(name: name) { |skill| skill.job_functions = job_functions }
+  "Endodontics" => [ DENTISTS, %w[endodontie] ],
+  "Restorative dentistry" => [ DENTISTS, [ "restauratieve tandheelkunde" ] ],
+  "Pediatric dentistry" => [ DENTISTS, %w[kindertandheelkunde] ],
+  "Surgery" => [ DENTISTS, %w[chirurgie] ],
+  "Aligners" => [ DENTISTS, %w[beugels] ],
+  "Periodontology" => [ [ "dental_hygienist" ], %w[parodontologie paro] ],
+  "Scaling" => [ [ "dental_hygienist" ], %w[gebitsreiniging] ],
+  "Patient education" => [ [ "dental_hygienist" ], %w[voorlichting patiëntenvoorlichting] ],
+  "Prevention" => [ [ "dental_hygienist", *ASSISTANTS ], %w[preventie] ],
+  "Chairside assistance" => [ ASSISTANTS, %w[stoelassistentie assisteren] ],
+  "Sterilization" => [ ASSISTANTS, %w[sterilisatie steriliseren] ],
+  "Orthodontics" => [ ASSISTANTS, %w[orthodontie] ],
+  "Planning" => [ [ "front_office" ], %w[agendabeheer planning] ],
+  "Phone handling" => [ [ "front_office" ], %w[telefonie] ],
+  "Invoicing" => [ [ "front_office" ], %w[facturatie declaraties] ],
+  "Patient communication" => [ [ "front_office" ], %w[patiëntencommunicatie] ],
+  "Team management" => [ [ "practice_manager" ], %w[teammanagement leidinggeven] ],
+  "Scheduling" => [ [ "practice_manager" ], %w[roosteren personeelsplanning] ],
+  "HR" => [ [ "practice_manager" ], %w[personeelszaken] ],
+  "Practice operations" => [ [ "practice_manager" ], %w[praktijkvoering] ],
+  "Prosthetics" => [ [ "dental_technician" ], %w[prothetiek] ],
+  "CAD/CAM" => [ [ "dental_technician" ], %w[cadcam] ],
+  "Crown and bridge work" => [ [ "dental_technician" ], [ "kroon- en brugwerk" ] ]
+}.each do |name, (job_functions, synonyms)|
+  # find_or_initialize rather than find_or_create_by!, whose block only runs on
+  # create: re-seeding has to update rows that already exist, not skip them.
+  skill = Skill.find_or_initialize_by(name: name)
+  skill.job_functions = job_functions
+  skill.synonyms = synonyms
+  skill.save!
 end

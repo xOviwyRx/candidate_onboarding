@@ -6,6 +6,12 @@ class Skill < ApplicationRecord
 
   scope :for_job_function, ->(function) { where("job_functions @> ARRAY[?]::varchar[]", function) }
 
+  # Every spelling the CV parser should recognise for this skill. §5 asks for
+  # Dutch and English, so the seeded rows carry both.
+  def terms
+    [ name, *synonyms ]
+  end
+
   private
 
   def job_functions_are_offered
