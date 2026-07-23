@@ -44,11 +44,14 @@ RSpec.describe "CandidateProfiles", type: :request do
     it "prefills the fields read from the candidate's CV" do
       sign_in(user)
       create(:candidate_document, user: user, parsing_status: :completed, parsed_at: Time.current,
-                                  parsed_data: { "first_name" => "Anna", "city" => "Amsterdam" })
+                                  parsed_data: { "city" => "Amsterdam", "big_number" => "89123456789" })
 
       get new_candidate_profile_path
 
-      expect(response.body).to include("Amsterdam")
+      aggregate_failures do
+        expect(response.body).to include("Amsterdam")
+        expect(response.body).to include("89123456789")
+      end
     end
 
     it "prefills the education and work experience rows read from the CV" do

@@ -3,7 +3,7 @@ class CandidateProfilesController < ApplicationController
   # skills and languages are nested and are prefilled separately.
   PREFILLABLE = %w[
     first_name last_name email phone_number city country
-    job_function years_of_experience professional_summary
+    job_function years_of_experience professional_summary big_number
   ].freeze
 
   EDUCATION_FIELDS = %w[institution study location level start_date end_date].freeze
