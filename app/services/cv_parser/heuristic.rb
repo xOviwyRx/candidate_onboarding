@@ -13,6 +13,7 @@ module CvParser
               .merge(JobFunction.new(text).call)
               .merge(Languages.new(text).call)
               .merge(Skills.new(text).call)
+              .merge(Summary.new(text).call)
     end
 
     private
