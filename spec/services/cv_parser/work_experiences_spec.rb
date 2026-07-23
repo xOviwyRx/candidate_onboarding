@@ -42,6 +42,20 @@ RSpec.describe CvParser::WorkExperiences do
     ])
   end
 
+  it "reads a range whose years carry month names" do
+    text = "Work Experience\nDental Assistant\nPraktijk Noord (Utrecht) | Jan 2020 – Mar 2023"
+
+    expect(described_class.new(text).call[:work_experiences].first)
+      .to include(start_date: "2020-01-01", end_date: "2023-12-31")
+  end
+
+  it "still reads an open-ended range written with a month" do
+    text = "Work Experience\nDental Assistant\nPraktijk Noord | Sep 2019 – present"
+
+    expect(described_class.new(text).call[:work_experiences].first)
+      .to include(start_date: "2019-01-01", current_job: true)
+  end
+
   it "returns nothing when the CV has no work experience section" do
     expect(described_class.new("Opleiding\n2012 - 2016, HBO Mondzorgkunde, HU").call).to be_empty
   end

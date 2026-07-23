@@ -3,7 +3,13 @@ module CvParser
   # read; a CV that dates a row by month gets January, which is close enough for
   # a field the candidate reviews before saving.
   class DateRange
-    PATTERN = /(\d{4})\s*[-–—\/]+\s*(\d{4}|heden|present|now|nu|current)/i
+    # CVs often write "Jan 2024 – Mar 2025". The month is skipped rather than
+    # read: it varies by language, and the year alone is enough for a field the
+    # candidate reviews. It cannot swallow "present" — the year group would then
+    # fail and the match backtracks with the month empty.
+    MONTH = /(?:[[:alpha:]]{3,10}\.?\s+)?/
+
+    PATTERN = /(\d{4})\s*[-–—\/]+\s*#{MONTH}(\d{4}|heden|present|now|nu|current)/i
     OPEN_ENDED = /\A(?:heden|present|now|nu|current)\z/i
 
     # A lone year, as education entries are usually dated: "Mondzorgkunde, 2016".

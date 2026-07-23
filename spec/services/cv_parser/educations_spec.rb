@@ -40,6 +40,13 @@ RSpec.describe CvParser::Educations do
       .to include(end_date: "2016-12-31")
   end
 
+  it "drops the punctuation left behind when the level is removed" do
+    text = "Education\nBachelor — Mondzorgkunde\nHogeschool Utrecht, 2016"
+
+    expect(described_class.new(text).call[:educations].first)
+      .to include(study: "Mondzorgkunde", institution: "Hogeschool Utrecht", level: "bachelor")
+  end
+
   it "returns nothing when the CV has no education section" do
     expect(described_class.new("Werkervaring\n2019 - 2021, Tandarts, ACTA").call).to be_empty
   end

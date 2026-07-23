@@ -23,6 +23,12 @@ module CvParser
 
     attr_reader :text
 
+    # "Bachelor — Mondzorgkunde" leaves a dash behind once the level comes off
+    # the front.
+    def strip_punctuation(value)
+      value.sub(/\A[[:punct:]\s]+/, "").strip
+    end
+
     # Work CVs put the job title above the employer, but education CVs usually
     # put the institution above the degree. The level word says which is which:
     # "Bachelor Mondzorgkunde" names a study, "Hogeschool Utrecht" does not.
@@ -40,7 +46,7 @@ module CvParser
 
       level = study[LEVEL, 1]&.downcase
 
-      { study: study.sub(LEVEL, ""), institution: institution,
+      { study: strip_punctuation(study.sub(LEVEL, "")), institution: institution,
         location: entry[:title] ? fields[1] : fields[2],
         level: DUTCH_LEVELS.fetch(level, level),
         start_date: entry[:dates][:start_date], end_date: entry[:dates][:end_date] }.compact
