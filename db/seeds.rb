@@ -12,5 +12,5 @@ end
 # so the same language always matches across profiles.
 %w[
   Dutch English German French Spanish Italian
-  Portuguese Polish Romanian Turkish Arabic Ukrainian
+  Portuguese Polish Romanian Turkish Arabic Ukrainian Russian
 ].each { |name| Language.find_or_create_by!(name: name) }

@@ -51,9 +51,28 @@ class CandidateProfilesController < ApplicationController
     parsed_rows("educations", EDUCATION_FIELDS).each { |attrs| @candidate_profile.educations.build(attrs) }
     parsed_rows("work_experiences", WORK_EXPERIENCE_FIELDS).each { |attrs| @candidate_profile.work_experiences.build(attrs) }
 
+    prefill_languages
+
     @candidate_profile.educations.build if @candidate_profile.educations.empty?
     @candidate_profile.work_experiences.build if @candidate_profile.work_experiences.empty?
     @candidate_profile.candidate_languages.build if @candidate_profile.candidate_languages.empty?
+  end
+
+  # The parser returns platform language names; only ones actually seeded are
+  # built, so a language the platform does not offer is dropped rather than
+  # breaking the form.
+  def prefill_languages
+    rows = parsed_cv["languages"]
+    return unless rows.is_a?(Array)
+
+    seeded = Language.where(name: rows.filter_map { |row| row["name"] }).index_by(&:name)
+
+    rows.each do |row|
+      language = seeded[row["name"]]
+      next if language.nil?
+
+      @candidate_profile.candidate_languages.build(language: language, level: row["level"])
+    end
   end
 
   # Slicing to known columns keeps anything unexpected in the parser output from

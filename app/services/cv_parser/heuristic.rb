@@ -11,6 +11,7 @@ module CvParser
       Patterns.new(text).call
               .merge(Name.new(text).call)
               .merge(JobFunction.new(text).call)
+              .merge(Languages.new(text).call)
     end
 
     private
