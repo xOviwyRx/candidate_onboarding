@@ -28,6 +28,11 @@ module CandidateOnboarding
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
 
+    # §9: no unauthenticated path to an uploaded CV. Active Storage's own routes
+    # serve a blob to anyone holding its signed id, so they are not drawn at all
+    # and CandidateDocumentsController#file is the only way in.
+    config.active_storage.draw_routes = false
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

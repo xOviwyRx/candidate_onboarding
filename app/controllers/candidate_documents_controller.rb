@@ -23,4 +23,16 @@ class CandidateDocumentsController < ApplicationController
   def show
     @candidate_document = current_user.candidate_documents.find(params[:id])
   end
+
+  # §9: scoped to the signed-in candidate, so another user's id raises
+  # RecordNotFound and returns 404 rather than the file. Held in memory rather
+  # than streamed, which the 25 MB upload cap keeps reasonable.
+  def file
+    document = current_user.candidate_documents.find(params[:id])
+
+    send_data document.file.download,
+              filename: document.original_filename,
+              type: document.content_type,
+              disposition: "inline"
+  end
 end

@@ -11,7 +11,11 @@
 <div class="card">
   <dl class="grid grid-cols-3 gap-y-2 text-sm">
     <dt class="font-medium text-gray-500">File</dt>
-    <dd class="col-span-2"><%= @candidate_document.original_filename %></dd>
+    <dd class="col-span-2">
+      <%= link_to @candidate_document.original_filename,
+                  file_candidate_document_path(@candidate_document),
+                  class: "text-blue-700 hover:underline" %>
+    </dd>
 
     <dt class="font-medium text-gray-500">Size</dt>
     <dd class="col-span-2"><%= number_to_human_size(@candidate_document.file_size) %></dd>

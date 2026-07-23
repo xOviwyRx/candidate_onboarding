@@ -114,4 +114,38 @@ RSpec.describe "CandidateDocuments", type: :request do
       expect(response).to have_http_status(:not_found)
     end
   end
+
+  describe "GET /candidate_documents/:id/file" do
+    it "sends the candidate their own CV" do
+      sign_in(user)
+      document = create(:candidate_document, user: user)
+
+      get file_candidate_document_path(document)
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "does NOT send a CV belonging to another candidate" do
+      sign_in(user)
+      someone_elses = create(:candidate_document)
+
+      get file_candidate_document_path(someone_elses)
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "does NOT send a CV to a visitor who is not signed in" do
+      document = create(:candidate_document, user: user)
+
+      get file_candidate_document_path(document)
+
+      expect(response).to redirect_to(new_session_path)
+    end
+  end
+
+  it "draws no unauthenticated Active Storage route to reach a CV by signed id" do
+    paths = Rails.application.routes.routes.map { |route| route.path.spec.to_s }
+
+    expect(paths.grep(%r{/rails/active_storage})).to be_empty
+  end
 end

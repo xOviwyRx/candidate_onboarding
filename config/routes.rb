@@ -4,8 +4,10 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   resource :session, only: %i[new create destroy]
-  resources :candidate_documents, only: %i[new create show]
-  resource  :candidate_profile,   only: %i[new create show]
+  resources :candidate_documents, only: %i[new create show] do
+    get :file, on: :member
+  end
+  resource :candidate_profile,   only: %i[new create show]
 
   root "candidate_documents#new"
 end
