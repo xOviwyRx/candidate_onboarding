@@ -148,6 +148,23 @@
     </div>
   </fieldset>
 
+  <fieldset class="card space-y-4">
+    <legend class="legend">Skills</legend>
+
+    <p class="text-sm text-gray-600">These follow the job function you chose above.</p>
+
+    <div class="grid gap-2 sm:grid-cols-3">
+      <%= form.collection_check_boxes :skill_ids, Skill.order(:name), :id, :name, include_hidden: false do |box| %>
+        <label class="flex items-center text-sm text-gray-700"
+               data-conditional-fields-target="section"
+               data-show-for="skill"
+               data-job-functions="<%= box.object.job_functions.join(",") %>">
+          <%= box.check_box(class: "checkbox") %><%= box.text %>
+        </label>
+      <% end %>
+    </div>
+  </fieldset>
+
   <fieldset class="card space-y-4" data-controller="nested-form">
     <legend class="legend">Education</legend>
 

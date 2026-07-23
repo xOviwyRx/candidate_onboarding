@@ -95,7 +95,7 @@ class CandidateProfilesController < ApplicationController
       :available_from, :professional_summary,
       :desired_gross_salary, :desired_percentage, :average_daily_revenue,
       :big_registration_status, :big_number,
-      preferred_regions: [], employment_types: [], available_working_days: [],
+      preferred_regions: [], employment_types: [], available_working_days: [], skill_ids: [],
       educations_attributes: EDUCATION_FIELDS,
       work_experiences_attributes: WORK_EXPERIENCE_FIELDS,
       candidate_languages_attributes: LANGUAGE_FIELDS

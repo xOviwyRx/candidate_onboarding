@@ -138,6 +138,14 @@ RSpec.describe "CandidateProfiles", type: :request do
       end
     end
 
+    it "saves the skills the candidate ticked" do
+      skill = create(:skill)
+
+      post candidate_profile_path, params: { candidate_profile: valid_attributes.merge(skill_ids: [ skill.id ]) }
+
+      expect(user.reload.candidate_profile.skills).to contain_exactly(skill)
+    end
+
     it "saves the languages submitted with the profile" do
       post candidate_profile_path, params: { candidate_profile: valid_attributes }
 

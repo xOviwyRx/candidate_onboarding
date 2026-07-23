@@ -4,6 +4,8 @@ class CandidateProfile < ApplicationRecord
   has_many :educations, dependent: :destroy
   has_many :work_experiences, dependent: :destroy
   has_many :candidate_languages, dependent: :destroy
+  has_many :candidate_skills, dependent: :destroy
+  has_many :skills, through: :candidate_skills
 
   accepts_nested_attributes_for :educations, reject_if: :all_blank
   accepts_nested_attributes_for :work_experiences, reject_if: :all_blank

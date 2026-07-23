@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_23_110309) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_23_111931) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -104,6 +104,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_23_110309) do
     t.index ["user_id"], name: "index_candidate_profiles_on_user_id", unique: true
   end
 
+  create_table "candidate_skills", force: :cascade do |t|
+    t.bigint "candidate_profile_id", null: false
+    t.bigint "skill_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["candidate_profile_id", "skill_id"], name: "index_candidate_skills_on_candidate_profile_id_and_skill_id", unique: true
+    t.index ["candidate_profile_id"], name: "index_candidate_skills_on_candidate_profile_id"
+    t.index ["skill_id"], name: "index_candidate_skills_on_skill_id"
+  end
+
   create_table "educations", force: :cascade do |t|
     t.bigint "candidate_profile_id", null: false
     t.string "institution"
@@ -122,6 +132,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_23_110309) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_languages_on_name", unique: true
+  end
+
+  create_table "skills", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "job_functions", default: [], null: false, array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_skills_on_name", unique: true
   end
 
   create_table "users", force: :cascade do |t|
@@ -153,6 +171,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_23_110309) do
   add_foreign_key "candidate_languages", "candidate_profiles"
   add_foreign_key "candidate_languages", "languages"
   add_foreign_key "candidate_profiles", "users"
+  add_foreign_key "candidate_skills", "candidate_profiles"
+  add_foreign_key "candidate_skills", "skills"
   add_foreign_key "educations", "candidate_profiles"
   add_foreign_key "work_experiences", "candidate_profiles"
 end

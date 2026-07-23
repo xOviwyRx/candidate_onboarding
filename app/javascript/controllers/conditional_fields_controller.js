@@ -12,12 +12,12 @@ export default class extends Controller {
 
   refresh() {
     this.sectionTargets.forEach((section) => {
-      section.hidden = !this.visible(section.dataset.showFor)
+      section.hidden = !this.visible(section)
     })
   }
 
-  visible(rule) {
-    switch (rule) {
+  visible(section) {
+    switch (section.dataset.showFor) {
       case "salary":
         return this.employmentTypes.includes("employed")
       case "percentage":
@@ -27,6 +27,9 @@ export default class extends Controller {
       // Nested inside the "big" section, so this only has to check the status.
       case "big_registered":
         return this.bigRegistrationStatusTarget.value === "registered"
+      // §3.6: each skill carries the job functions it belongs to.
+      case "skill":
+        return section.dataset.jobFunctions.split(",").includes(this.jobFunctionTarget.value)
       default:
         return true
     }

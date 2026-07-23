@@ -79,6 +79,13 @@
     </div>
   <% end %>
 
+  <% if @candidate_profile.skills.any? %>
+    <div class="mt-6 border-t border-gray-200 pt-6">
+      <h2 class="mb-3 text-sm font-medium text-gray-500">Skills</h2>
+      <p class="text-sm text-gray-700"><%= @candidate_profile.skills.order(:name).pluck(:name).to_sentence %></p>
+    </div>
+  <% end %>
+
   <% if @candidate_profile.educations.any? %>
     <div class="mt-6 border-t border-gray-200 pt-6">
       <h2 class="mb-3 text-sm font-medium text-gray-500">Education</h2>
