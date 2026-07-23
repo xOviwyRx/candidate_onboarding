@@ -5,13 +5,16 @@ module CvParser
   class Educations
     HEADING = /\A(?:opleiding(?:en)?|education|studie)\s*(?::\s*(.*))?\z/xi
     LEVEL = /\A(mbo|hbo|bachelor|master|doctor|course|cursus)\b[\s:-]*/i
+    SEPARATORS = /[,()·|—–]/
+
+    DUTCH_LEVELS = { "cursus" => "course" }.freeze
 
     def initialize(text)
       @text = text.to_s
     end
 
     def call
-      rows = Section.lines(text, HEADING).filter_map { |line| row_for(line) }
+      rows = Entries.from(Section.lines(text, HEADING)).filter_map { |entry| row_for(entry) }
 
       rows.any? ? { educations: rows } : {}
     end
@@ -20,19 +23,27 @@ module CvParser
 
     attr_reader :text
 
-    def row_for(line)
-      dates = DateRange.from(line)
-      return if dates.nil?
+    # Work CVs put the job title above the employer, but education CVs usually
+    # put the institution above the degree. The level word says which is which:
+    # "Bachelor Mondzorgkunde" names a study, "Hogeschool Utrecht" does not.
+    def split_study_and_institution(above, fields)
+      return [ fields[0], fields[1] ] if above.blank?
+      return [ fields[0], above ] if fields[0].to_s.match?(LEVEL)
 
-      fields = line.sub(DateRange::PATTERN, "").split(",").map(&:strip).reject(&:empty?)
-      return if fields.empty?
+      [ above, fields[0] ]
+    end
 
-      study = fields[0]
+    def row_for(entry)
+      fields = entry[:line].sub(entry[:dates][:matched], "").split(SEPARATORS).map(&:strip).reject(&:empty?)
+      study, institution = split_study_and_institution(entry[:title], fields)
+      return if study.blank?
+
       level = study[LEVEL, 1]&.downcase
 
-      { study: study.sub(LEVEL, ""), institution: fields[1], location: fields[2],
-        level: level == "cursus" ? "course" : level,
-        start_date: dates[:start_date], end_date: dates[:end_date] }.compact
+      { study: study.sub(LEVEL, ""), institution: institution,
+        location: entry[:title] ? fields[1] : fields[2],
+        level: DUTCH_LEVELS.fetch(level, level),
+        start_date: entry[:dates][:start_date], end_date: entry[:dates][:end_date] }.compact
     end
   end
 end

@@ -28,6 +28,20 @@ RSpec.describe CvParser::WorkExperiences do
     expect(described_class.new(text).call[:work_experiences].length).to eq(1)
   end
 
+  it "reads an entry whose title sits on the line above its dates" do
+    text = <<~CV
+      WORK EXPERIENCE
+      Dental Hygienist
+      Tandartspraktijk Centrum (Utrecht · 2019 / present)
+      Ran the periodontal programme and supervised two prevention assistants daily.
+    CV
+
+    expect(described_class.new(text).call).to eq(work_experiences: [
+      { job_title: "Dental Hygienist", company_name: "Tandartspraktijk Centrum",
+        start_date: "2019-01-01", current_job: true }
+    ])
+  end
+
   it "returns nothing when the CV has no work experience section" do
     expect(described_class.new("Opleiding\n2012 - 2016, HBO Mondzorgkunde, HU").call).to be_empty
   end

@@ -26,6 +26,20 @@ RSpec.describe CvParser::Educations do
     )
   end
 
+  it "tells study from institution when they sit on separate lines" do
+    text = "EDUCATION\nHogeschool Utrecht\nBachelor Mondzorgkunde, 2016"
+
+    expect(described_class.new(text).call).to eq(educations: [
+      { study: "Mondzorgkunde", institution: "Hogeschool Utrecht",
+        level: "bachelor", end_date: "2016-12-31" }
+    ])
+  end
+
+  it "reads a lone year as the year the study finished" do
+    expect(described_class.new("Education\nMondzorgkunde, Hogeschool Utrecht, 2016").call[:educations].first)
+      .to include(end_date: "2016-12-31")
+  end
+
   it "returns nothing when the CV has no education section" do
     expect(described_class.new("Werkervaring\n2019 - 2021, Tandarts, ACTA").call).to be_empty
   end

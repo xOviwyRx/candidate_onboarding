@@ -3,10 +3,17 @@ module CvParser
   # read; a CV that dates a row by month gets January, which is close enough for
   # a field the candidate reviews before saving.
   class DateRange
-    PATTERN = /(\d{4})\s*[-–—]+\s*(\d{4}|heden|present|now|nu|current)/i
+    PATTERN = /(\d{4})\s*[-–—\/]+\s*(\d{4}|heden|present|now|nu|current)/i
     OPEN_ENDED = /\A(?:heden|present|now|nu|current)\z/i
 
+    # A lone year, as education entries are usually dated: "Mondzorgkunde, 2016".
+    SINGLE_YEAR = /(?<!\d)(19|20)\d{2}(?!\d)/
+
     def self.from(line)
+      range(line) || single_year(line)
+    end
+
+    def self.range(line)
       match = line.match(PATTERN)
       return if match.nil?
 
@@ -14,7 +21,17 @@ module CvParser
 
       { start_date: "#{match[1]}-01-01",
         end_date: ("#{finishes}-12-31" unless finishes.match?(OPEN_ENDED)),
-        current: finishes.match?(OPEN_ENDED) }
+        current: finishes.match?(OPEN_ENDED),
+        matched: match[0] }
+    end
+
+    # Read as the year the row finished, which is what a single date on an
+    # education line means. No start date is invented for it.
+    def self.single_year(line)
+      match = line.match(SINGLE_YEAR)
+      return if match.nil?
+
+      { end_date: "#{match[0]}-12-31", current: false, matched: match[0] }
     end
   end
 end
