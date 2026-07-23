@@ -3,12 +3,12 @@ require "rails_helper"
 RSpec.describe ParseCandidateCvJob, type: :job do
   subject(:parse) { described_class.new.perform(document) }
 
-  let(:document) { create(:candidate_document) }
+  let(:document) { create(:candidate_document, :parsable_pdf) }
 
   it "stores what the parser found" do
     parse
 
-    expect(document.reload.parsed_data).to include("first_name" => "Anna")
+    expect(document.reload.parsed_data).to include("email" => "sanne.bakker@example.nl")
   end
 
   it "marks the document as completed" do
