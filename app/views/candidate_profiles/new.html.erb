@@ -19,34 +19,34 @@
 
     <div class="grid gap-4 sm:grid-cols-2">
       <div>
-        <%= form.label :first_name, class: "field-label" %>
+        <%= form.label :first_name, class: "field-label" %><%= provenance_badge(:first_name) %>
         <%= form.text_field :first_name, class: "field" %>
       </div>
 
       <div>
-        <%= form.label :last_name, class: "field-label" %>
+        <%= form.label :last_name, class: "field-label" %><%= provenance_badge(:last_name) %>
         <%= form.text_field :last_name, class: "field" %>
       </div>
     </div>
 
     <div>
-      <%= form.label :email, class: "field-label" %>
+      <%= form.label :email, class: "field-label" %><%= provenance_badge(:email) %>
       <%= form.email_field :email, class: "field" %>
     </div>
 
     <div>
-      <%= form.label :phone_number, class: "field-label" %>
+      <%= form.label :phone_number, class: "field-label" %><%= provenance_badge(:phone_number) %>
       <%= form.telephone_field :phone_number, class: "field" %>
     </div>
 
     <div class="grid gap-4 sm:grid-cols-2">
       <div>
-        <%= form.label :city, "City / place of residence", class: "field-label" %>
+        <%= form.label :city, "City / place of residence", class: "field-label" %><%= provenance_badge(:city) %>
         <%= form.text_field :city, class: "field" %>
       </div>
 
       <div>
-        <%= form.label :country, class: "field-label" %>
+        <%= form.label :country, class: "field-label" %><%= provenance_badge(:country) %>
         <%= form.text_field :country, class: "field" %>
       </div>
     </div>
@@ -74,7 +74,7 @@
     <legend class="legend">Job preferences</legend>
 
     <div>
-      <%= form.label :job_function, "Desired job function", class: "field-label" %>
+      <%= form.label :job_function, "Desired job function", class: "field-label" %><%= provenance_badge(:job_function) %>
       <%= form.select :job_function,
                       CandidateProfile::JOB_FUNCTIONS.map { |value| [ value.humanize, value ] },
                       { include_blank: "Please choose" },
@@ -136,14 +136,14 @@
         </div>
 
         <div data-conditional-fields-target="section" data-show-for="big_registered">
-          <%= form.label :big_number, "BIG number", class: "field-label" %>
+          <%= form.label :big_number, "BIG number", class: "field-label" %><%= provenance_badge(:big_number) %>
           <%= form.text_field :big_number, class: "field" %>
         </div>
       </div>
     </div>
 
     <div>
-      <%= form.label :years_of_experience, "Years of dental experience", class: "field-label" %>
+      <%= form.label :years_of_experience, "Years of dental experience", class: "field-label" %><%= provenance_badge(:years_of_experience) %>
       <%= form.number_field :years_of_experience, min: 0, step: 0.5, class: "field" %>
     </div>
   </fieldset>
@@ -218,7 +218,7 @@
     <legend class="legend">Additional information</legend>
 
     <div>
-      <%= form.label :professional_summary, class: "field-label" %>
+      <%= form.label :professional_summary, class: "field-label" %><%= provenance_badge(:professional_summary) %>
       <%= form.text_area :professional_summary, rows: 4, class: "field" %>
     </div>
   </fieldset>

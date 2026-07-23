@@ -15,6 +15,7 @@ class CandidateProfilesController < ApplicationController
 
   def new
     @candidate_profile = current_user.build_candidate_profile(prefilled_attributes)
+    @provenance = FieldProvenance.new(parsed_cv)
     prefill_nested_records
   end
 
@@ -25,6 +26,7 @@ class CandidateProfilesController < ApplicationController
       current_user.record_consent
       redirect_to candidate_profile_path, notice: "Your profile has been saved."
     else
+      @provenance = FieldProvenance.new(parsed_cv)
       render :new, status: :unprocessable_content
     end
   end

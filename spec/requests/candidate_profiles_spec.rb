@@ -56,6 +56,28 @@ RSpec.describe "CandidateProfiles", type: :request do
       end
     end
 
+    it "labels where each prefilled field came from" do
+      sign_in(user)
+      create(:candidate_document, user: user, parsing_status: :completed, parsed_at: Time.current,
+                                  parsed_data: { "email" => "anna@example.com", "first_name" => "Anna" })
+
+      get new_candidate_profile_path
+
+      aggregate_failures do
+        expect(response.body).to include(FieldProvenance::EXTRACTED)
+        expect(response.body).to include(FieldProvenance::CHECK)
+        expect(response.body).to include(FieldProvenance::MISSING)
+      end
+    end
+
+    it "labels nothing for a candidate who never uploaded a CV" do
+      sign_in(user)
+
+      get new_candidate_profile_path
+
+      expect(response.body).not_to include(FieldProvenance::MISSING)
+    end
+
     it "prefills the education and work experience rows read from the CV" do
       sign_in(user)
       create(:candidate_document, user: user, parsing_status: :completed, parsed_at: Time.current,
