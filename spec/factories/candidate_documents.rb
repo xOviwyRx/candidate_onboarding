@@ -45,6 +45,11 @@ FactoryBot.define do
       fixture { "cv.docx" }
     end
 
+    trait :parsable_doc do
+      word_document
+      fixture { "cv.doc" }
+    end
+
     trait :unsupported_type do
       filename { "cv.txt" }
       file_content_type { "text/plain" }

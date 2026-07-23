@@ -27,7 +27,7 @@ RSpec.describe CvParser::JobFunction do
   end
 
   it "returns nothing for a CV from outside dentistry" do
-    expect(described_class.new("Sam Vos\nRuby on Rails backend developer").call).to be_empty
+    expect(described_class.new("Sam Vos\nLandscape architect").call).to be_empty
   end
 
   it "ignores a job title buried below the top of the CV" do

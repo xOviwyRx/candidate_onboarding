@@ -1,7 +1,10 @@
 class CandidateDocument < ApplicationRecord
+  # A genuine Word 97 file is sniffed as the generic OLE2 container type rather
+  # than application/msword, so both are accepted for a .doc upload.
   CONTENT_TYPES = %w[
     application/pdf
     application/msword
+    application/x-ole-storage
     application/vnd.openxmlformats-officedocument.wordprocessingml.document
   ].freeze
 

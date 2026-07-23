@@ -8,6 +8,9 @@ module CvParser
     # own PDF module, which would break PDF::Reader below.
     PDF_CONTENT_TYPE = "application/pdf"
     DOCX_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    # A real Word 97 file is sniffed as the generic OLE2 container type, not as
+    # application/msword, so both have to route to the DOC branch.
+    DOC_CONTENT_TYPES = %w[application/msword application/x-ole-storage].freeze
 
     def initialize(candidate_document)
       @candidate_document = candidate_document
@@ -17,6 +20,7 @@ module CvParser
       case candidate_document.content_type
       when PDF_CONTENT_TYPE then extract_pdf
       when DOCX_CONTENT_TYPE then extract_docx
+      when *DOC_CONTENT_TYPES then extract_doc
       else
         raise UnsupportedFormat, "Cannot extract text from #{candidate_document.content_type}"
       end
@@ -34,15 +38,23 @@ module CvParser
     # paragraphs individually keeps the line breaks that section detection needs;
     # calling .text on the whole document would run them together.
     def extract_docx
-      download do |path|
-        Zip::File.open(path) do |zip|
-          entry = zip.find_entry("word/document.xml")
-          raise UnsupportedFormat, "DOCX has no document body" if entry.nil?
+      download { |path| docx_text(path) }
+    end
 
-          xml = Nokogiri::XML(entry.get_input_stream.read)
-          xml.remove_namespaces!
-          xml.css("p").map(&:text).join("\n")
-        end
+    # Converted first, then read as a DOCX, so there is one text-extraction path
+    # rather than two.
+    def extract_doc
+      download { |path| DocConverter.convert(path) { |docx| docx_text(docx) } }
+    end
+
+    def docx_text(path)
+      Zip::File.open(path) do |zip|
+        entry = zip.find_entry("word/document.xml")
+        raise UnsupportedFormat, "DOCX has no document body" if entry.nil?
+
+        xml = Nokogiri::XML(entry.get_input_stream.read)
+        xml.remove_namespaces!
+        xml.css("p").map(&:text).join("\n")
       end
     end
 
