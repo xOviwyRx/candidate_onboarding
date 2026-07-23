@@ -1,7 +1,9 @@
 require "rails_helper"
 
 RSpec.describe ParseCandidateCvJob, type: :job do
-  subject(:parse) { described_class.new.perform(document) }
+  # Loaded fresh, because that is what the job receives once ActiveJob has
+  # deserialized it — attributes that only lived in memory are gone.
+  subject(:parse) { described_class.new.perform(CandidateDocument.find(document.id)) }
 
   let(:document) { create(:candidate_document, :parsable_pdf) }
 

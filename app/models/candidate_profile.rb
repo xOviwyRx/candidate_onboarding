@@ -16,7 +16,7 @@ class CandidateProfile < ApplicationRecord
   # validator skips it and the check box is not shown again.
   attr_accessor :consent
 
-  validate :consent_accepted, unless: -> { user&.consented? }
+  validate :consent_accepted, on: :create, unless: -> { user&.consented? }
 
   PHONE_NUMBER_FORMAT = /\A\+?[0-9\s\-()]{6,20}\z/
 

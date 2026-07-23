@@ -28,7 +28,9 @@ class CandidateDocument < ApplicationRecord
 
   before_validation :extract_file_metadata, if: -> { file.attached? }
 
-  validate :consent_accepted
+  # on: :create only — consent is an attr_accessor, so it is nil on a record
+  # loaded from the database, and the parsing job would fail its own update.
+  validate :consent_accepted, on: :create
 
   validates :file, presence: true
   validates :original_filename, presence: true
