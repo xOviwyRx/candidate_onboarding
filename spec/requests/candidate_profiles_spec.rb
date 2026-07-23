@@ -70,6 +70,20 @@ RSpec.describe "CandidateProfiles", type: :request do
       end
     end
 
+    it "labels the languages and skills sections the parser filled in" do
+      sign_in(user)
+      create(:language, name: "Dutch")
+      create(:candidate_document, user: user, parsing_status: :completed, parsed_at: Time.current,
+                                  parsed_data: {
+                                    "languages" => [ { "name" => "Dutch", "level" => "native" } ],
+                                    "skills" => [ "Periodontology" ]
+                                  })
+
+      get new_candidate_profile_path
+
+      expect(response.body.scan(FieldProvenance::EXTRACTED).count).to eq(2)
+    end
+
     it "labels nothing for a candidate who never uploaded a CV" do
       sign_in(user)
 
