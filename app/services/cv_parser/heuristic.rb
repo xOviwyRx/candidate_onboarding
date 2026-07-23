@@ -8,7 +8,7 @@ module CvParser
     end
 
     def call
-      Patterns.new(text).call
+      Patterns.new(text).call.merge(Name.new(text).call)
     end
 
     private
@@ -16,7 +16,7 @@ module CvParser
     attr_reader :candidate_document
 
     def text
-      TextExtractor.new(candidate_document).call
+      @text ||= TextExtractor.new(candidate_document).call
     end
   end
 end
