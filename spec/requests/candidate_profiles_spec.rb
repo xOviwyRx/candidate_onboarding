@@ -189,6 +189,21 @@ RSpec.describe "CandidateProfiles", type: :request do
       expect(response).to redirect_to(candidate_profile_path)
     end
 
+    it "saves the optional fields only the candidate can fill in" do
+      post candidate_profile_path, params: { candidate_profile: valid_attributes.merge(
+        transport_types: [ "bike" ], notice_period: "one month",
+        motivation_for_employer: "I want a smaller practice.", internal_notes: "Prefers mornings."
+      ) }
+
+      profile = user.reload.candidate_profile
+
+      aggregate_failures do
+        expect(profile.transport_types).to eq([ "bike" ])
+        expect(profile.notice_period).to eq("one month")
+        expect(profile.internal_notes).to eq("Prefers mornings.")
+      end
+    end
+
     it "saves the skills the candidate ticked" do
       skill = create(:skill)
 

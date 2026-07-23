@@ -97,6 +97,10 @@
     <%= render "shared/check_box_group", form: form, attribute: :preferred_regions,
                collection: CandidateProfile::PREFERRED_REGIONS,
                label: "Preferred regions", columns: "sm:grid-cols-3" %>
+
+    <%= render "shared/check_box_group", form: form, attribute: :transport_types,
+               collection: CandidateProfile::TRANSPORT_TYPES,
+               label: "Transport type", columns: "sm:grid-cols-4" %>
   </fieldset>
 
   <fieldset class="card space-y-4">
@@ -212,6 +216,11 @@
       <%= form.label :available_from, class: "field-label" %>
       <%= form.date_field :available_from, class: "field" %>
     </div>
+
+    <div>
+      <%= form.label :notice_period, class: "field-label" %>
+      <%= form.text_field :notice_period, placeholder: "For example: one month", class: "field" %>
+    </div>
   </fieldset>
 
   <fieldset class="card space-y-4">
@@ -220,6 +229,22 @@
     <div>
       <%= form.label :professional_summary, class: "field-label" %><%= provenance_badge(:professional_summary) %>
       <%= form.text_area :professional_summary, rows: 4, class: "field" %>
+    </div>
+
+    <div>
+      <%= form.label :motivation_for_employer, "Motivation for a future employer", class: "field-label" %>
+      <%= form.text_area :motivation_for_employer, rows: 3, class: "field" %>
+    </div>
+
+    <div>
+      <%= form.label :reason_for_looking, "Reason for looking for something new", class: "field-label" %>
+      <%= form.text_area :reason_for_looking, rows: 2, class: "field" %>
+    </div>
+
+    <div>
+      <%= form.label :internal_notes, "Notes for the recruitment team", class: "field-label" %>
+      <%= form.text_area :internal_notes, rows: 3, class: "field" %>
+      <p class="mt-1 text-xs text-gray-500">Only you fill this in — it is never taken from your CV.</p>
     </div>
   </fieldset>
 
