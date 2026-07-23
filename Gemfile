@@ -69,3 +69,12 @@ group :development do
 end
 
 gem "tailwindcss-rails", "~> 4.6"
+
+# Extract text from uploaded PDF CVs [https://github.com/yob/pdf-reader]
+gem "pdf-reader"
+
+# Read DOCX files, which are zipped XML [https://github.com/rubyzip/rubyzip]
+gem "rubyzip", require: "zip"
+
+# Parse the XML inside a DOCX [https://nokogiri.org]
+gem "nokogiri"
