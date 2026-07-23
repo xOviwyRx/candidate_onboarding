@@ -45,11 +45,17 @@ RSpec.describe CvParser::Patterns do
       "Mondhygienist met 7 jaar ervaring" => 7.0,
       "5,5 jaar ervaring in de mondzorg" => 5.5,
       "10+ jaar werkervaring" => 10.0,
-      "8 years of experience in dentistry" => 8.0
+      "8 years of experience in dentistry" => 8.0,
+      "Dental hygienist with 9+ years of general practice experience" => 9.0
     }.each do |text, expected|
       it "reads #{text.inspect}" do
         expect(described_class.new(text).call[:years_of_experience]).to eq(expected)
       end
+    end
+
+    it "does not carry a year count across a sentence boundary" do
+      expect(described_class.new("Studied 4 years in Utrecht. No experience listed.").call)
+        .not_to include(:years_of_experience)
     end
   end
 

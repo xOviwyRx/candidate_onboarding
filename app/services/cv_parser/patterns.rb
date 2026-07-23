@@ -6,8 +6,11 @@ module CvParser
     EMAIL = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i
     PHONE = /(?:\+|00)\d[\d\s\-()]{6,18}\d|\b0\d[\d\s\-()]{6,14}\d/
     BIG_NUMBER = /BIG[\s\-]*\w*[\s:.\-]*(\d{11})/i
+    # The window between the number and the word "experience" is measured in
+    # characters, not words, because real phrasing varies: "4+ years of backend
+    # development experience". Excluding . and \n stops it spanning sentences.
     YEARS_OF_EXPERIENCE =
-      /(\d{1,2}(?:[.,]5)?)\s*\+?\s*(?:jaar|jaren|years?)\b(?:\s+\w+){0,2}?\s+\w*(?:ervaring|experience)/i
+      /(\d{1,2}(?:[.,]5)?)\s*\+?\s*(?:jaar|jaren|years?)\b[^.\n]{0,40}?(?:ervaring|experience)/i
 
     PLAUSIBLE_PHONE_DIGITS = (9..15)
 
