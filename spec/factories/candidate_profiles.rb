@@ -19,6 +19,14 @@ FactoryBot.define do
     available_working_days { %w[monday tuesday wednesday] }
     available_from { Date.current }
 
+    # §3.1 requires at least one language. Built rather than created so the
+    # profile still saves in one go, and skipped when a spec supplies its own.
+    after(:build) do |profile|
+      next if profile.candidate_languages.any?
+
+      profile.candidate_languages.build(language: Language.find_or_create_by!(name: "Dutch"), level: "native")
+    end
+
     trait :self_employed do
       employment_types { [ "self_employed" ] }
       desired_gross_salary { nil }

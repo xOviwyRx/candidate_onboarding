@@ -8,6 +8,7 @@ class CandidateProfilesController < ApplicationController
 
   EDUCATION_FIELDS = %w[institution study location level start_date end_date].freeze
   WORK_EXPERIENCE_FIELDS = %w[job_title company_name responsibilities start_date end_date current_job].freeze
+  LANGUAGE_FIELDS = %w[language_id level].freeze
 
   before_action :require_sign_in
   before_action :redirect_to_profile, only: %i[new create], if: -> { current_user.candidate_profile }
@@ -52,6 +53,7 @@ class CandidateProfilesController < ApplicationController
 
     @candidate_profile.educations.build if @candidate_profile.educations.empty?
     @candidate_profile.work_experiences.build if @candidate_profile.work_experiences.empty?
+    @candidate_profile.candidate_languages.build if @candidate_profile.candidate_languages.empty?
   end
 
   # Slicing to known columns keeps anything unexpected in the parser output from
@@ -76,7 +78,8 @@ class CandidateProfilesController < ApplicationController
       :big_registration_status, :big_number,
       preferred_regions: [], employment_types: [], available_working_days: [],
       educations_attributes: EDUCATION_FIELDS,
-      work_experiences_attributes: WORK_EXPERIENCE_FIELDS
+      work_experiences_attributes: WORK_EXPERIENCE_FIELDS,
+      candidate_languages_attributes: LANGUAGE_FIELDS
     )
   end
 end

@@ -7,3 +7,10 @@
 User.find_or_create_by!(email: "candidate@example.com") do |user|
   user.password = "secret123"
 end
+
+# The platform's language list. Candidates pick from these rather than typing,
+# so the same language always matches across profiles.
+%w[
+  Dutch English German French Spanish Italian
+  Portuguese Polish Romanian Turkish Arabic Ukrainian
+].each { |name| Language.find_or_create_by!(name: name) }

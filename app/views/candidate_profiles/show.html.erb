@@ -64,6 +64,21 @@
     <dd class="col-span-2"><%= l @candidate_profile.available_from, format: :long %></dd>
   </dl>
 
+  <% if @candidate_profile.candidate_languages.any? %>
+    <div class="mt-6 border-t border-gray-200 pt-6">
+      <h2 class="mb-3 text-sm font-medium text-gray-500">Languages</h2>
+
+      <ul class="space-y-1 text-sm">
+        <% @candidate_profile.candidate_languages.includes(:language).each do |candidate_language| %>
+          <li>
+            <%= [ candidate_language.language.name,
+                  CandidateLanguage::LEVEL_LABELS[candidate_language.level] ].compact_blank.join(" · ") %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
   <% if @candidate_profile.educations.any? %>
     <div class="mt-6 border-t border-gray-200 pt-6">
       <h2 class="mb-3 text-sm font-medium text-gray-500">Education</h2>

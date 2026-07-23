@@ -16,6 +16,7 @@ RSpec.describe CandidateProfile, type: :model do
   it { is_expected.to validate_presence_of(:preferred_regions) }
   it { is_expected.to validate_presence_of(:employment_types) }
   it { is_expected.to validate_presence_of(:available_working_days) }
+  it { is_expected.to validate_presence_of(:candidate_languages) }
 
   it { is_expected.to validate_inclusion_of(:job_function).in_array(described_class::JOB_FUNCTIONS) }
   it { is_expected.to validate_inclusion_of(:search_status).in_array(described_class::SEARCH_STATUSES) }

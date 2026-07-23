@@ -52,6 +52,24 @@
     </div>
   </fieldset>
 
+  <fieldset class="card space-y-4" data-controller="nested-form">
+    <legend class="legend">Languages</legend>
+
+    <div class="space-y-4" data-nested-form-target="rows">
+      <%= form.fields_for :candidate_languages do |language_form| %>
+        <%= render "candidate_language_fields", form: language_form %>
+      <% end %>
+    </div>
+
+    <template data-nested-form-target="template">
+      <%= form.fields_for :candidate_languages, CandidateLanguage.new, child_index: "NEW_RECORD" do |language_form| %>
+        <%= render "candidate_language_fields", form: language_form %>
+      <% end %>
+    </template>
+
+    <button type="button" class="btn-secondary" data-action="nested-form#add">Add language</button>
+  </fieldset>
+
   <fieldset class="card space-y-4">
     <legend class="legend">Job preferences</legend>
 

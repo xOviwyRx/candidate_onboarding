@@ -18,7 +18,8 @@ RSpec.describe "CandidateProfiles", type: :request do
       available_from: Date.current,
       preferred_regions: [ "noord_holland" ],
       employment_types: [ "employed" ],
-      available_working_days: %w[monday tuesday]
+      available_working_days: %w[monday tuesday],
+      candidate_languages_attributes: [ { language_id: create(:language).id, level: "native" } ]
     }
   end
 
@@ -135,6 +136,12 @@ RSpec.describe "CandidateProfiles", type: :request do
         expect(profile.educations.pluck(:study)).to contain_exactly("Mondzorgkunde", "Tandheelkunde")
         expect(profile.work_experiences.pluck(:job_title)).to contain_exactly("Dental Hygienist", "Dental Assistant")
       end
+    end
+
+    it "saves the languages submitted with the profile" do
+      post candidate_profile_path, params: { candidate_profile: valid_attributes }
+
+      expect(user.reload.candidate_profile.candidate_languages.first.level).to eq("native")
     end
 
     context "with rows the candidate left blank" do

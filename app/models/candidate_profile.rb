@@ -3,9 +3,11 @@ class CandidateProfile < ApplicationRecord
 
   has_many :educations, dependent: :destroy
   has_many :work_experiences, dependent: :destroy
+  has_many :candidate_languages, dependent: :destroy
 
   accepts_nested_attributes_for :educations, reject_if: :all_blank
   accepts_nested_attributes_for :work_experiences, reject_if: :all_blank
+  accepts_nested_attributes_for :candidate_languages, reject_if: :all_blank
 
   PHONE_NUMBER_FORMAT = /\A\+?[0-9\s\-()]{6,20}\z/
 
@@ -57,6 +59,7 @@ class CandidateProfile < ApplicationRecord
   validates :preferred_regions, presence: true
   validates :employment_types, presence: true
   validates :available_working_days, presence: true
+  validates :candidate_languages, presence: true
 
   validate { validate_allowed_values(:preferred_regions, PREFERRED_REGIONS) }
   validate { validate_allowed_values(:employment_types, EMPLOYMENT_TYPES) }
