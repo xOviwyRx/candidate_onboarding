@@ -24,6 +24,7 @@ class CandidateProfilesController < ApplicationController
 
     if @candidate_profile.save
       current_user.record_consent
+      RecruitmentMailer.candidate_onboarding_completed(@candidate_profile).deliver_later
       redirect_to candidate_profile_path, notice: "Your profile has been saved."
     else
       @provenance = FieldProvenance.new(parsed_cv)

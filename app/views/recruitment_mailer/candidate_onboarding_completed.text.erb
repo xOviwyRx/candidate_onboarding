@@ -1,0 +1,12 @@
+<%= @candidate_profile.first_name %> <%= @candidate_profile.last_name %> completed onboarding.
+
+Job function:  <%= @candidate_profile.job_function.humanize %>
+Lives in:      <%= [ @candidate_profile.city, @candidate_profile.country ].compact_blank.join(", ") %>
+Experience:    <%= @candidate_profile.years_of_experience %> years
+Available:     <%= l @candidate_profile.available_from, format: :long %>
+Email:         <%= @candidate_profile.email %>
+Phone:         <%= @candidate_profile.phone_number %>
+
+Education:     <%= @candidate_profile.educations.count %> record(s)
+Work history:  <%= @candidate_profile.work_experiences.count %> record(s)
+Skills:        <%= @candidate_profile.skills.order(:name).pluck(:name).to_sentence.presence || "none selected" %>

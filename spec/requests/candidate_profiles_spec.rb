@@ -204,6 +204,12 @@ RSpec.describe "CandidateProfiles", type: :request do
       end
     end
 
+    it "notifies the recruitment team without making the candidate wait for it" do
+      expect {
+        post candidate_profile_path, params: { candidate_profile: valid_attributes }
+      }.to have_enqueued_mail(RecruitmentMailer, :candidate_onboarding_completed)
+    end
+
     it "saves the skills the candidate ticked" do
       skill = create(:skill)
 
